@@ -8,6 +8,7 @@ import { ensureInternationalTrips } from './ensure-international-trips'
 import { ensureLegalPages } from './ensure-legal'
 import { ensureSiteSettingsColumns } from './ensure-columns'
 import { ensureSeed } from './seed'
+import { ensureTables } from './tables'
 
 const defaultPath = path.join(process.cwd(), 'data', 'trip-booking.db')
 const dbPath = process.env.DATABASE_URL?.replace(/^file:/, '') || defaultPath
@@ -18,9 +19,11 @@ const sqlite = new Database(dbPath)
 sqlite.pragma('journal_mode = WAL')
 sqlite.pragma('foreign_keys = ON')
 
+ensureTables(sqlite)
 ensureSiteSettingsColumns(sqlite)
 
 export function ensureDbSchema() {
+  ensureTables(sqlite)
   ensureSiteSettingsColumns(sqlite)
 }
 
