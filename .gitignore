@@ -1,0 +1,15 @@
+node_modules
+.output
+dist
+data
+.env
+drizzle/*.sql
+*.db
+*.db-shm
+*.db-wal
+.next
+.tanstack
+*.log
+.DS_Store
+public/uploads/*
+!public/uploads/.gitkeep
