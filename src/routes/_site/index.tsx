@@ -281,53 +281,55 @@ function HomePage() {
         </div>
       </section>
 
-      {upcoming.length > 0 && (
+      {(upcoming.length > 0 || popular.length > 0) && (
         <section id="future" className="mx-auto max-w-7xl px-4 py-12 md:py-24">
-          <SectionHeading
-            kicker={<InlineText value={home.futureKicker} onChange={(v) => setHome({ futureKicker: v })} />}
-            title={<InlineText value={home.futureTitle} onChange={(v) => setHome({ futureTitle: v })} />}
-          />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {upcoming.map((trip) => (
-              <Link
-                key={`${trip.id}-${trip.nextDate}`}
-                to="/trips/$slug"
-                params={{ slug: trip.slug }}
-                className="card flex gap-4 overflow-hidden p-3 transition hover:shadow-md"
-              >
-                <img src={trip.coverImageUrl} alt="" className="h-24 w-24 rounded-xl object-cover" />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{formatDate(trip.nextDate)}</p>
-                  <h3 className="mt-1 truncate font-semibold">{trip.title}</h3>
-                  <p className="text-sm text-muted">
-                    <PriceTag etb={trip.price} usd={trip.priceUsd} size="sm" /> · {trip.spotsRemaining} spots left
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+          {upcoming.length > 0 && (
+            <>
+              <SectionHeading
+                kicker={<InlineText value={home.futureKicker} onChange={(v) => setHome({ futureKicker: v })} />}
+                title={<InlineText value={home.futureTitle} onChange={(v) => setHome({ futureTitle: v })} />}
+              />
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {upcoming.map((trip) => (
+                  <Link
+                    key={`${trip.id}-${trip.nextDate}`}
+                    to="/trips/$slug"
+                    params={{ slug: trip.slug }}
+                    className="card flex gap-4 overflow-hidden p-3 transition hover:shadow-md"
+                  >
+                    <img src={trip.coverImageUrl} alt="" className="h-24 w-24 rounded-xl object-cover" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-primary">{formatDate(trip.nextDate)}</p>
+                      <h3 className="mt-1 truncate font-semibold">{trip.title}</h3>
+                      <p className="text-sm text-muted">
+                        <PriceTag etb={trip.price} usd={trip.priceUsd} size="sm" /> · {trip.spotsRemaining} spots left
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
 
-      {popular.length > 0 && (
-        <section className="bg-card px-4 py-12 md:py-24">
-          <div className="mx-auto max-w-7xl">
-            <SectionHeading
-              kicker={<InlineText value={home.popularKicker} onChange={(v) => setHome({ popularKicker: v })} />}
-              title={t('popularTrips')}
-            />
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {popular.map((trip) => (
-                <TripCard
-                  key={trip.id}
-                  trip={trip}
-                  locale={locale}
-                  loggedIn={Boolean(user)}
-                  isWishlisted={wishlistIds.includes(trip.id)}
-                />
-              ))}
+          {popular.length > 0 && (
+            <div className={upcoming.length > 0 ? 'mt-16' : undefined}>
+              <SectionHeading
+                kicker={<InlineText value={home.popularKicker} onChange={(v) => setHome({ popularKicker: v })} />}
+                title={t('popularTrips')}
+              />
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {popular.map((trip) => (
+                  <TripCard
+                    key={trip.id}
+                    trip={trip}
+                    locale={locale}
+                    loggedIn={Boolean(user)}
+                    isWishlisted={wishlistIds.includes(trip.id)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </section>
       )}
 
