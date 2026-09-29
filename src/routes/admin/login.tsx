@@ -23,6 +23,14 @@ function AdminLoginPage() {
     try {
       const result = await loginFn({ data: { identifier: email, password } })
       if (!result.ok) {
+        if (result.error === 'EMAIL_NOT_VERIFIED') {
+          setError('Email is not verified yet. Check your inbox, or use the demo admin account.')
+          return
+        }
+        if (result.error === 'EMAIL_SEND_FAILED') {
+          setError('Could not send verification email. Try again shortly.')
+          return
+        }
         setError('Email, phone, or password is incorrect.')
         return
       }
@@ -44,7 +52,7 @@ function AdminLoginPage() {
       <form onSubmit={submit} className="card w-full p-6">
         <h1 className="font-display text-2xl font-bold">Admin Login</h1>
         <p className="mt-1 text-sm text-muted">Sign in to manage your trip booking site.</p>
-        <p className="mt-2 text-xs text-muted">Demo: admin@tripexplorer.com / admin123</p>
+        <p className="mt-2 text-xs text-muted">Demo: admin@tripexplorer.com / admin123 · Negus Events site</p>
         <div className="mt-6 space-y-4">
           <div>
             <label className="label">Email or phone</label>

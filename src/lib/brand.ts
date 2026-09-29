@@ -1,0 +1,10 @@
+export const BRAND_NAME = 'Negus Events'
+export const BRAND_NAME_ALT = 'Negus events'
+export const BRAND_LOGO_PATH = '/logo.png'
+export const BRAND_PHONE = '0923132815'
+export const BRAND_EMAIL = 'info@negusevents.com'
+export const BRAND_ADDRESS = 'Lebu, Addis Ababa, Ethiopia'
+export const BRAND_INSTAGRAM = 'https://www.instagram.com/_negus_events/'
+export const BRAND_TIKTOK =
+  'https://www.tiktok.com/@negus_events?_t=8sVpwkR2cli&_r=1'
+export const BRAND_SITE_URL = 'https://negusevents.netlify.app/'

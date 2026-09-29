@@ -7,7 +7,7 @@ import { ensureDayTripSeed } from './day-trip-seed'
 import { ensureInternationalTrips } from './ensure-international-trips'
 import { ensureLegalPages } from './ensure-legal'
 import { ensureSiteSettingsColumns } from './ensure-columns'
-import { ensureSeed } from './seed'
+import { ensureDemoAdmin, ensureNegusBrand, ensureSeed } from './seed'
 import { ensureTables } from './tables'
 
 const defaultPath = path.join(process.cwd(), 'data', 'trip-booking.db')
@@ -30,6 +30,8 @@ export function ensureDbSchema() {
 export const db = drizzle(sqlite, { schema })
 
 void ensureSeed()
+  .then(() => ensureNegusBrand())
+  .then(() => ensureDemoAdmin())
   .then(() => ensureDayTripSeed())
   .then(() => ensureInternationalTrips())
   .then(() => ensureLegalPages())

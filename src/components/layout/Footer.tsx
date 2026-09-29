@@ -4,6 +4,7 @@ import { TikTokIcon } from '~/components/icons/TikTokIcon'
 import { useLocale } from '~/components/locale-context'
 import { NewsletterSignup } from '~/components/contact/NewsletterSignup'
 import type { PublicUser } from '~/lib/auth-types'
+import { BRAND_LOGO_PATH, BRAND_NAME } from '~/lib/brand'
 import type { SiteSettings } from '~/server/db/schema'
 
 type FooterProps = {
@@ -19,7 +20,10 @@ export function Footer({ settings, user }: FooterProps) {
     <footer className="mt-auto border-t-[3px] border-primary bg-black text-white">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-4">
         <div>
-          <h3 className="font-display text-lg font-semibold">{settings?.businessName ?? 'Trip Explorer'}</h3>
+          <div className="flex items-center gap-3">
+            <img src={BRAND_LOGO_PATH} alt="" className="h-14 w-14 rounded-full ring-1 ring-primary/60" width={56} height={56} />
+            <h3 className="font-display text-lg font-semibold text-primary">{settings?.businessName ?? BRAND_NAME}</h3>
+          </div>
           <p className="mt-2 text-sm text-white/70">{settings?.heroSubtitle}</p>
           <div className="mt-4 flex gap-3">
             {settings?.facebookUrl && (

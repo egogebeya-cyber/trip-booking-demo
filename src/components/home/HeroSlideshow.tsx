@@ -77,7 +77,8 @@ export function HeroSlideshow({
           aria-hidden={i !== index}
         />
       ))}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/55 to-black/75" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/70 to-[#121212]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgb(212_175_55/0.2),transparent_48%)]" />
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">{children}</div>
 
@@ -115,7 +116,7 @@ export function HeroSlideshow({
               onClick={() => setIndex(i)}
               className={cn(
                 'h-2 rounded-full transition-all',
-                i === index ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80',
+                i === index ? 'w-6 bg-primary' : 'w-2 bg-primary/40 hover:bg-primary/70',
               )}
             />
           ))}

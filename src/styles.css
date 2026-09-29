@@ -1,24 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss' source('./');
 
 @theme {
-  --font-display: 'Oswald', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Cinzel', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-accent: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
-  --color-background: #efe6d4;
-  --color-foreground: #2c2416;
-  --color-muted: #5c6456;
-  --color-card: #fff8ee;
-  --color-border: #d4c7b0;
-  --color-primary: #2f5d3a;
-  --color-primary-foreground: #ffffff;
-  --color-primary-hover: #23452b;
-  --color-earth: #2f5d3a;
-  --color-accent: #ebe6d9;
-  --color-destructive: #a63d2f;
-  --color-ring: #2f5d3a;
-  --color-price: #d4a017;
+  /* Exact Negus crest palette: charcoal + metallic gold */
+  --color-background: #121212;
+  --color-foreground: #f3ecd8;
+  --color-muted: #b9a878;
+  --color-card: #1a1a1a;
+  --color-border: #6b5420;
+  --color-primary: #d4af37;
+  --color-primary-foreground: #121212;
+  --color-primary-hover: #f1c40f;
+  --color-earth: #cba24b;
+  --color-accent: #181818;
+  --color-destructive: #c44;
+  --color-ring: #d4af37;
+  --color-price: #f6e39f;
 }
 
 @layer base {
@@ -33,6 +34,10 @@
     font-size: 15px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(900px 420px at 50% -80px, rgb(212 175 55 / 0.18), transparent 60%),
+      radial-gradient(700px 500px at 100% 20%, rgb(203 162 75 / 0.08), transparent 50%),
+      #121212;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
@@ -47,11 +52,11 @@
   .font-accent { font-family: var(--font-accent); }
 
   .card {
-    @apply rounded-2xl border-2 border-primary bg-card shadow-md transition;
+    @apply rounded-2xl border border-primary/40 bg-card shadow-md transition;
   }
   .card:hover {
     border-color: var(--color-primary-hover);
-    box-shadow: 0 20px 40px rgb(47 93 58 / 0.15);
+    box-shadow: 0 20px 40px rgb(201 162 39 / 0.12);
     transform: translateY(-6px);
   }
   .card:has(input):hover,
@@ -61,12 +66,12 @@
 
   .btn-primary {
     @apply relative inline-flex items-center justify-center overflow-hidden rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-widest text-primary-foreground transition;
-    background-image: linear-gradient(135deg, #2f5d3a, #23452b);
-    box-shadow: 0 8px 25px rgb(47 93 58 / 0.3);
+    background-image: linear-gradient(135deg, #f6e39f, #d4af37 45%, #996515);
+    box-shadow: 0 8px 25px rgb(212 175 55 / 0.35);
   }
   .btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgb(47 93 58 / 0.4);
+    box-shadow: 0 15px 35px rgb(201 162 39 / 0.45);
   }
 
   .btn-outline {
@@ -132,10 +137,10 @@
   }
 
   .nav-link-sb {
-    @apply relative rounded-full px-4 py-2 text-sm font-medium uppercase tracking-wide text-black transition;
+    @apply relative rounded-full px-4 py-2 text-sm font-medium uppercase tracking-wide text-foreground transition;
   }
   .nav-link-sb:hover {
-    background: rgb(47 93 58 / 0.08);
+    background: rgb(201 162 39 / 0.12);
     color: var(--color-primary);
   }
   .nav-link-sb::after {
@@ -175,7 +180,8 @@
       letter-spacing: 2px;
     }
   }
-  .brand-underline span { color: var(--color-foreground); }
+  .brand-underline span { color: var(--color-primary); }
+  .brand-mark .brand-underline { color: var(--color-primary); }
   .brand-underline::after {
     content: '';
     position: absolute;

@@ -25,7 +25,7 @@ function SiteLayout() {
       <div className="flex min-h-dvh flex-col">
         <AdminEditBar />
         <Header user={user} settings={settings} />
-        <main className="min-w-0 flex-1 overflow-x-hidden">
+        <main className="min-w-0 flex-1 overflow-x-clip">
           <Outlet />
         </main>
         <TrustBadges />

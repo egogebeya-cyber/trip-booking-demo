@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Negus">
+  <defs>
+    <linearGradient id="g" x1="40" y1="20" x2="160" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6E7A8"/>
+      <stop offset="0.4" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#8C6B14"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="#141414"/>
+  <circle cx="100" cy="100" r="96" fill="none" stroke="url(#g)" stroke-width="1.2" opacity="0.35"/>
+  <!-- crown -->
+  <path fill="url(#g)" d="M58 62 L70 46 L78 58 L100 34 L122 58 L130 46 L142 62 L136 70 H64 Z"/>
+  <path fill="url(#g)" d="M70 44 a3 3 0 1 1 0.1 0 M100 32 a3.2 3.2 0 1 1 0.1 0 M130 44 a3 3 0 1 1 0.1 0"/>
+  <!-- shield -->
+  <path fill="none" stroke="url(#g)" stroke-width="3.2" d="M68 72 H132 V108 C132 132 116 148 100 156 C84 148 68 132 68 108 Z"/>
+  <!-- serif N -->
+  <path fill="url(#g)" d="M82 86 H90 L112 122 V86 H120 V140 H112 L90 104 V140 H82 Z"/>
+  <text x="100" y="182" text-anchor="middle" fill="url(#g)" font-family="Georgia, 'Times New Roman', Times, serif" font-size="22" font-weight="700" letter-spacing="3">NEGUS</text>
+</svg>

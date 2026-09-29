@@ -5,6 +5,7 @@ import { BackButton } from '~/components/back-button'
 import { useLocale } from '~/components/locale-context'
 import { LOCALES, localeLabels, localeNames } from '~/lib/i18n'
 import type { PublicUser } from '~/lib/auth-types'
+import { BRAND_LOGO_PATH, BRAND_NAME } from '~/lib/brand'
 import { logoutFn } from '~/server/auth/functions'
 
 type HeaderProps = {
@@ -12,12 +13,19 @@ type HeaderProps = {
   settings?: { businessName?: string | null } | null
 }
 
-function BrandName({ name }: { name: string }) {
-  const [first, ...rest] = name.split(' ')
+function BrandMark({ name }: { name: string }) {
   return (
-    <Link to="/" className="brand-underline">
-      {first}
-      {rest.length > 0 && <span> {rest.join(' ')}</span>}
+    <Link to="/" className="brand-mark flex items-center gap-3">
+      <img
+        src={BRAND_LOGO_PATH}
+        alt=""
+        className="h-12 w-12 shrink-0 rounded-full bg-black object-cover shadow-[0_0_18px_rgb(212_175_55/0.45)] ring-2 ring-primary sm:h-14 sm:w-14"
+        width={48}
+        height={48}
+      />
+      <span className="brand-underline !text-[1.05rem] sm:!text-[1.35rem]">
+        {name}
+      </span>
     </Link>
   )
 }
@@ -27,7 +35,7 @@ export function Header({ user, settings }: HeaderProps) {
   const router = useRouter()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const showBack = pathname !== '/'
-  const brand = settings?.businessName ?? 'Trip Explorer'
+  const brand = settings?.businessName ?? BRAND_NAME
   const [langOpen, setLangOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const langRef = useRef<HTMLDivElement>(null)
@@ -62,11 +70,11 @@ export function Header({ user, settings }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b-[3px] border-primary bg-background shadow-sm">
+    <header className="sticky top-0 z-50 border-b-[3px] border-primary bg-black shadow-md">
       <div className="mx-auto flex max-w-7xl flex-col items-start gap-2 px-4 py-3">
         <div className="flex flex-wrap items-center gap-3">
           {showBack && <BackButton fallbackTo="/" size="sm" />}
-          <BrandName name={brand} />
+          <BrandMark name={brand} />
         </div>
 
         <nav className="flex w-full flex-wrap items-center gap-x-1 gap-y-2">

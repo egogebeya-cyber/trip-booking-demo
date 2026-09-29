@@ -1,5 +1,6 @@
 import { MessageCircle, Phone, Send, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { BRAND_NAME } from '~/lib/brand'
 import { cn } from '~/lib/utils'
 import type { PublicUser } from '~/lib/auth-types'
 import { getMyChatFn, sendChatMessageFn } from '~/server/chat/functions'
@@ -42,7 +43,7 @@ export function SupportChat({
   const [faqs, setFaqs] = useState<Faq[]>([])
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
-  const company = businessName ?? 'Trip Explorer'
+  const company = businessName ?? BRAND_NAME
   const hasWhatsApp = Boolean(whatsappNumber?.trim())
   const telegramHandle = (telegramBotUsername || telegramUsername || '').replace(/^@/, '')
   const hasTelegram = Boolean(telegramHandle)

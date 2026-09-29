@@ -155,14 +155,14 @@ function AdminLayout() {
           />
         )}
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-64 overflow-y-auto bg-[#1e3d28] p-4 text-white shadow-lg transition-transform md:static md:z-0 md:w-60 md:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-50 w-64 overflow-y-auto bg-[#0a0a0a] p-4 text-white shadow-lg transition-transform md:static md:z-0 md:w-60 md:translate-x-0 ${
             navOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
           }`}
         >
           <AdminNav admin={admin} onNavigate={() => setNavOpen(false)} onLogout={() => void handleLogout()} />
         </aside>
         <div className="flex min-w-0 flex-1 flex-col bg-background">
-          <div className="flex items-center gap-3 border-b border-border bg-[#1e3d28] px-4 py-3 text-white md:hidden">
+          <div className="flex items-center gap-3 border-b border-border bg-[#0a0a0a] px-4 py-3 text-white md:hidden">
             <button
               type="button"
               className="flex h-11 w-11 items-center justify-center rounded-lg hover:bg-white/10"

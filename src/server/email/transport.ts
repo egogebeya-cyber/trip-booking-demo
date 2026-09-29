@@ -37,7 +37,7 @@ export async function getEmailConfig(): Promise<EmailConfig> {
   const port = Number(env('SMTP_PORT') || settings?.smtpPort || 587) || 587
   const pass = (env('SMTP_PASS') || settings?.smtpPass || '').replace(/\s/g, '')
   const resendKey = env('RESEND_API_KEY')
-  const business = settings?.businessName || 'Trip Explorer'
+  const business = settings?.businessName || 'Negus Events'
   const envFrom = env('EMAIL_FROM')
   const fromRaw =
     settings?.smtpFrom ||

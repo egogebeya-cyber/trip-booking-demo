@@ -14,12 +14,12 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
-      { title: 'Trip Explorer — Book Amazing Adventures' },
-      { name: 'description', content: 'Discover and book unforgettable trips across Ethiopia and beyond.' },
+      { title: 'Negus Events — Planner & Organizers' },
+      { name: 'description', content: 'Negus events planner & organizers. Let\'s travel — book trips and adventures from Addis Ababa.' },
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
-      { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+      { rel: 'icon', href: '/favicon.png', type: 'image/png' },
     ],
   }),
   errorComponent: DefaultCatchBoundary,

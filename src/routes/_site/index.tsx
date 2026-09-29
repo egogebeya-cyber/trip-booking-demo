@@ -3,6 +3,7 @@ import { Facebook, Instagram, Mail, MapPin, MessageCircle, Phone, Send } from 'l
 import { TikTokIcon } from '~/components/icons/TikTokIcon'
 import { useCallback, useState } from 'react'
 import { NewsletterSignup } from '~/components/contact/NewsletterSignup'
+import { AngledGalleryCarousel } from '~/components/home/AngledGalleryCarousel'
 import { HeroSlideshow } from '~/components/home/HeroSlideshow'
 import { SectionHeading } from '~/components/home/SectionHeading'
 import { InlineImage } from '~/components/inline-image'
@@ -12,6 +13,7 @@ import { useRegisterPageSave, useSiteEdit } from '~/components/site-edit-context
 import { useLocale } from '~/components/locale-context'
 import { TripCard } from '~/components/trips/TripCard'
 import { PriceTag } from '~/components/price-tag'
+import { BRAND_LOGO_PATH } from '~/lib/brand'
 import { formatDate } from '~/lib/utils'
 import { tripsSearch } from '~/lib/trips-search'
 import {
@@ -182,6 +184,13 @@ function HomePage() {
             : undefined
         }
       >
+        <img
+          src={BRAND_LOGO_PATH}
+          alt="Negus Events"
+          className="mx-auto mb-5 h-28 w-28 rounded-full bg-black object-cover shadow-[0_0_40px_rgb(212_175_55/0.45)] ring-2 ring-primary/70 sm:h-36 sm:w-36"
+          width={144}
+          height={144}
+        />
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-primary">
           <InlineText value={home.heroKicker} onChange={(v) => setHome({ heroKicker: v })} className="text-center uppercase tracking-[0.3em] text-primary" />
         </p>
@@ -357,38 +366,26 @@ function HomePage() {
       )}
 
       {(gallery.length > 0 || isAdmin) && (
-        <section className="bg-accent px-4 py-12 md:py-24">
+        <section className="overflow-x-clip bg-accent px-4 py-12 md:py-24">
           <div className="mx-auto max-w-7xl">
             <SectionHeading
               kicker={<InlineText value={home.galleryKicker} onChange={(v) => setHome({ galleryKicker: v })} />}
               title={<InlineText value={home.galleryTitle} onChange={(v) => setHome({ galleryTitle: v })} />}
             />
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-              {gallery.map((src, i) => (
-                <div key={`${src}-${i}`} className="overflow-hidden rounded-2xl">
-                  <InlineImage
-                    src={src}
-                    alt=""
-                    imgClassName="aspect-[4/3] w-full object-cover"
-                    onChange={(url) => {
+            <AngledGalleryCarousel
+              images={gallery}
+              isAdmin={isAdmin}
+              onReplace={
+                isAdmin
+                  ? (index, url) => {
                       const next = [...gallery]
-                      next[i] = url
+                      next[index] = url
                       setHome({ galleryImages: next })
-                    }}
-                  />
-                </div>
-              ))}
-              {isAdmin && (
-                <div className="overflow-hidden rounded-2xl">
-                  <InlineImage
-                    src={undefined}
-                    alt=""
-                    imgClassName="aspect-[4/3] w-full object-cover"
-                    onChange={(url) => setHome({ galleryImages: [...gallery, url] })}
-                  />
-                </div>
-              )}
-            </div>
+                    }
+                  : undefined
+              }
+              onAdd={isAdmin ? (url) => setHome({ galleryImages: [...gallery, url] }) : undefined}
+            />
           </div>
         </section>
       )}

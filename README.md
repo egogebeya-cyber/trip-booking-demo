@@ -16,11 +16,17 @@ Full-stack trip booking website built with TanStack Start, React 19, SQLite, and
 
 ## Quick Start
 
+Project folder:
+
+`C:\Users\kalid\OneDrive\Desktop\OBS\apps\bookings\trip booking`
+
 ```bash
 npm install
 npm run db:push
 npm run dev
 ```
+
+Or double-click **`start-dev.bat`** in that folder (Windows).
 
 Open [http://localhost:3001](http://localhost:3001)
 

@@ -1,6 +1,14 @@
 import bcrypt from 'bcryptjs'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
+import {
+  BRAND_ADDRESS,
+  BRAND_EMAIL,
+  BRAND_INSTAGRAM,
+  BRAND_NAME,
+  BRAND_PHONE,
+  BRAND_TIKTOK,
+} from '~/lib/brand'
 import { CANCELLATION_FAQ_ANSWER, LEGAL_PAGES } from '~/lib/legal-content'
 import { db } from './index'
 import {
@@ -34,6 +42,7 @@ export async function ensureSeed() {
     passwordHash: adminHash,
     fullName: 'Site Admin',
     role: 'admin',
+    emailVerified: true,
   })
 
   const customerHash = bcrypt.hashSync('customer123', 10)
@@ -44,6 +53,7 @@ export async function ensureSeed() {
     fullName: 'Demo Customer',
     phone: '0911000000',
     role: 'customer',
+    emailVerified: true,
   })
 
   const categories = [
@@ -273,7 +283,69 @@ export async function ensureSeed() {
   ])
 }
 
+export async function ensureNegusBrand() {
+  const [row] = await db.select().from(siteSettings).where(eq(siteSettings.id, 'default')).limit(1)
+  if (!row || row.businessName !== 'Trip Explorer') return
+
+  await db
+    .update(siteSettings)
+    .set({
+      businessName: BRAND_NAME,
+      email: BRAND_EMAIL,
+      phone: BRAND_PHONE,
+      address: BRAND_ADDRESS,
+      instagramUrl: BRAND_INSTAGRAM,
+      tiktokUrl: BRAND_TIKTOK,
+      heroTitle: "Let's Travel",
+      heroSubtitle: 'Negus events planner & organizers — book now',
+      telegramUsername: 'negus_events',
+    })
+    .where(eq(siteSettings.id, 'default'))
+}
+
+export async function ensureDemoAdmin() {
+  const [existing] = await db
+    .select({ id: users.id, emailVerified: users.emailVerified })
+    .from(users)
+    .where(eq(users.email, 'admin@tripexplorer.com'))
+    .limit(1)
+
+  if (!existing) {
+    await db.insert(users).values({
+      id: nanoid(),
+      email: 'admin@tripexplorer.com',
+      passwordHash: bcrypt.hashSync('admin123', 10),
+      fullName: 'Site Admin',
+      role: 'admin',
+      emailVerified: true,
+    })
+    return
+  }
+
+  if (!existing.emailVerified) {
+    await db
+      .update(users)
+      .set({ emailVerified: true, role: 'admin' })
+      .where(eq(users.id, existing.id))
+  }
+}
+
 export async function resetAdminPassword() {
   const hash = bcrypt.hashSync('admin123', 10)
-  await db.update(users).set({ passwordHash: hash }).where(eq(users.email, 'admin@tripexplorer.com'))
+  const updated = await db
+    .update(users)
+    .set({ passwordHash: hash, emailVerified: true, role: 'admin' })
+    .where(eq(users.email, 'admin@tripexplorer.com'))
+    .returning({ id: users.id })
+
+  if (updated.length === 0) {
+    await db.insert(users).values({
+      id: nanoid(),
+      email: 'admin@tripexplorer.com',
+      passwordHash: hash,
+      fullName: 'Site Admin',
+      role: 'admin',
+      emailVerified: true,
+    })
+  }
 }

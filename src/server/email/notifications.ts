@@ -1,3 +1,4 @@
+import { BRAND_NAME, BRAND_PHONE } from '~/lib/brand'
 import { sendEmail } from './transport'
 
 function escapeHtml(value: string) {
@@ -11,12 +12,12 @@ function escapeHtml(value: string) {
 function layout(title: string, body: string) {
   return `<!DOCTYPE html>
 <html>
-<body style="margin:0;padding:24px;background:#f4f1ea;font-family:Arial,sans-serif;color:#1f2937;">
-  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;">
-    <p style="margin:0 0 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#166534;">Trip Explorer</p>
-    <h1 style="margin:0 0 16px;font-size:22px;">${escapeHtml(title)}</h1>
+<body style="margin:0;padding:24px;background:#0f0f0f;font-family:Arial,sans-serif;color:#f5f0e6;">
+  <div style="max-width:560px;margin:0 auto;background:#1a1a1a;border-radius:16px;padding:28px;border:1px solid #3d3520;">
+    <p style="margin:0 0 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#c9a227;">${escapeHtml(BRAND_NAME)}</p>
+    <h1 style="margin:0 0 16px;font-size:22px;color:#f5f0e6;">${escapeHtml(title)}</h1>
     ${body}
-    <p style="margin:24px 0 0;font-size:12px;color:#6b7280;">WhatsApp / phone: 0974332069</p>
+    <p style="margin:24px 0 0;font-size:12px;color:#b8b0a0;">WhatsApp / phone: ${escapeHtml(BRAND_PHONE)}</p>
   </div>
 </body>
 </html>`
@@ -169,8 +170,8 @@ export async function sendPasswordResetEmail(data: { to: string; resetUrl: strin
     text: `Reset your password: ${data.resetUrl}`,
     html: layout(
       'Reset your password',
-      `<p>We received a request to reset your Trip Explorer password.</p>
-       <p><a href="${escapeHtml(data.resetUrl)}" style="display:inline-block;background:#166534;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;">Reset password</a></p>
+      `<p>We received a request to reset your ${escapeHtml(BRAND_NAME)} password.</p>
+       <p><a href="${escapeHtml(data.resetUrl)}" style="display:inline-block;background:#c9a227;color:#0a0a0a;padding:10px 18px;border-radius:999px;text-decoration:none;">Reset password</a></p>
        <p>If you did not ask for this, you can ignore this email.</p>`,
     ),
   })
@@ -194,12 +195,12 @@ export async function sendLoginSuccessEmail(data: { to: string; fullName?: strin
   const name = data.fullName?.trim() || 'there'
   return sendEmail({
     to: data.to,
-    subject: 'Successful login to Trip Explorer',
-    text: `Hi ${name},\n\nYou signed in to Trip Explorer successfully on ${when} (Ethiopia time).\n\nIf this was not you, reset your password immediately.`,
+    subject: `Successful login to ${BRAND_NAME}`,
+    text: `Hi ${name},\n\nYou signed in to ${BRAND_NAME} successfully on ${when} (Ethiopia time).\n\nIf this was not you, reset your password immediately.`,
     html: layout(
       'Successful login',
       `<p>Hi ${escapeHtml(name)},</p>
-       <p>You signed in to <strong>Trip Explorer</strong> successfully.</p>
+       <p>You signed in to <strong>${escapeHtml(BRAND_NAME)}</strong> successfully.</p>
        <p><strong>Time:</strong> ${escapeHtml(when)} (Ethiopia time)</p>
        <p>If this was not you, reset your password right away.</p>`,
     ),
@@ -209,7 +210,7 @@ export async function sendLoginSuccessEmail(data: { to: string; fullName?: strin
 export async function sendEmailVerificationCode(data: { to: string; code: string }) {
   return sendEmail({
     to: data.to,
-    subject: 'Your Trip Explorer verification code',
+    subject: `Your ${BRAND_NAME} verification code`,
     text: `Your verification code is ${data.code}. It expires in 15 minutes.`,
     html: layout(
       'Verify your email',
@@ -228,7 +229,7 @@ export async function sendAnnouncementEmail(data: {
   linkLabel?: string
 }) {
   const linkHtml = data.linkUrl
-    ? `<p><a href="${escapeHtml(data.linkUrl)}" style="display:inline-block;background:#166534;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;">${escapeHtml(data.linkLabel || 'View details')}</a></p>`
+    ? `<p><a href="${escapeHtml(data.linkUrl)}" style="display:inline-block;background:#c9a227;color:#0a0a0a;padding:10px 18px;border-radius:999px;text-decoration:none;">${escapeHtml(data.linkLabel || 'View details')}</a></p>`
     : ''
   const linkText = data.linkUrl ? `\n${data.linkLabel || 'View details'}: ${data.linkUrl}` : ''
   return sendEmail({
