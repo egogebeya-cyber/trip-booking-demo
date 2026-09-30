@@ -1,6 +1,6 @@
 export const BRAND_NAME = 'Negus Events'
 export const BRAND_NAME_ALT = 'Negus events'
-export const BRAND_LOGO_PATH = '/logo.png?v=14'
+export const BRAND_LOGO_PATH = '/logo.png?v=15'
 export const BRAND_PHONE = '0923132815'
 export const BRAND_EMAIL = 'info@negusevents.com'
 export const BRAND_ADDRESS = 'Lebu, Addis Ababa, Ethiopia'

@@ -7,10 +7,11 @@ const sizeClasses = {
   hero: 'h-40 w-40 sm:h-48 sm:w-48',
 } as const
 
+/** Thin site ring only — crest art already includes its own gold double ring. */
 const frameClasses = {
-  compact: 'ring-2 ring-primary',
-  header: 'ring-2 ring-primary',
-  hero: 'ring-2 ring-primary shadow-[0_0_40px_rgb(212_175_55/0.35)]',
+  compact: 'ring-1 ring-primary',
+  header: 'ring-1 ring-primary',
+  hero: 'ring-1 ring-primary shadow-[0_0_40px_rgb(212_175_55/0.35)]',
 } as const
 
 /** 2× CSS box size for crisp downscale from 640px master. */
