@@ -14,8 +14,13 @@ const STORAGE_KEY = 'trip-booking-locale'
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY) as Locale | null
-      if (stored && LOCALES.includes(stored)) return stored
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored && (LOCALES as readonly string[]).includes(stored)) {
+        return stored as Locale
+      }
+      if (stored === 'om') {
+        localStorage.setItem(STORAGE_KEY, 'en')
+      }
     }
     return 'en'
   })

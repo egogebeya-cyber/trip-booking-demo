@@ -24,6 +24,7 @@
   --color-header-foreground: var(--negus-header-foreground);
   --color-header-muted: var(--negus-header-muted);
   --color-overlay: var(--negus-overlay);
+  --color-logo-fill: var(--negus-logo-fill);
 }
 
 html.dark {
@@ -48,6 +49,8 @@ html.dark {
   --negus-offer-card-shadow: 0 10px 28px rgb(0 0 0 / 0.45);
   --negus-future-trip-bg: linear-gradient(165deg, rgb(34 34 34), rgb(18 18 18));
   --negus-future-trip-shadow: 0 8px 22px rgb(0 0 0 / 0.4);
+  /* Midnight navy — logo disk inside gold ring (hero + header) */
+  --negus-logo-fill: #0f1729;
 }
 
 html.light {
@@ -72,6 +75,7 @@ html.light {
   --negus-offer-card-shadow: 0 10px 28px rgb(28 24 16 / 0.08);
   --negus-future-trip-bg: linear-gradient(165deg, #ffffff, #f3ede0);
   --negus-future-trip-shadow: 0 8px 22px rgb(28 24 16 / 0.08);
+  --negus-logo-fill: #0f1729;
 }
 
 @layer base {
@@ -260,6 +264,26 @@ html.light {
 }
 
 @media (max-width: 767px) {
+  .trips-filter-form .trips-filter-select {
+    min-height: 2.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .trips-filter-form .trips-filter-submit {
+    grid-column: 1 / -1;
+    min-height: 2.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  .trips-filter-form .trips-filter-submit:hover {
+    transform: none;
+  }
+
   .section-band-mobile {
     background: var(--negus-section-band);
   }

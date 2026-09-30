@@ -7,6 +7,7 @@ import { useOptionalSiteEdit } from '~/components/site-edit-context'
 import { PriceTag } from '~/components/price-tag'
 import { TripAdminControls } from '~/components/trips/TripAdminControls'
 import { WishlistButton } from '~/components/wishlist-button'
+import type { Locale } from '~/lib/i18n'
 import { saveTripFn } from '~/server/admin/functions'
 
 type TripCardProps = {
@@ -25,7 +26,7 @@ type TripCardProps = {
     isLastMinuteDeal?: boolean
     [key: string]: unknown
   }
-  locale?: 'en' | 'am' | 'om'
+  locale?: Locale
   onCompare?: (id: string) => void
   isWishlisted?: boolean
   loggedIn?: boolean

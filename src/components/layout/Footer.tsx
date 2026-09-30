@@ -4,7 +4,8 @@ import { TikTokIcon } from '~/components/icons/TikTokIcon'
 import { useLocale } from '~/components/locale-context'
 import { NewsletterSignup } from '~/components/contact/NewsletterSignup'
 import type { PublicUser } from '~/lib/auth-types'
-import { BRAND_LOGO_PATH, BRAND_NAME } from '~/lib/brand'
+import { BrandLogoMark } from '~/components/brand/BrandLogoMark'
+import { BRAND_NAME } from '~/lib/brand'
 import type { SiteSettings } from '~/server/db/schema'
 
 type FooterProps = {
@@ -21,7 +22,7 @@ export function Footer({ settings, user }: FooterProps) {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-4 md:py-12">
         <div>
           <div className="flex items-center gap-3">
-            <img src={BRAND_LOGO_PATH} alt="" className="h-14 w-14 rounded-full ring-1 ring-primary/60" width={56} height={56} />
+            <BrandLogoMark size="header" alt="" />
             <h3 className="font-display text-lg font-semibold text-primary">{settings?.businessName ?? BRAND_NAME}</h3>
           </div>
           <p className="mt-2 text-sm text-header-muted">{settings?.heroSubtitle}</p>

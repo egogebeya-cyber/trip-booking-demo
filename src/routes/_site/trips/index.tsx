@@ -1,11 +1,11 @@
-import { Link, createFileRoute, useLoaderData, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute, useLoaderData } from '@tanstack/react-router'
 import { useState } from 'react'
 import { BackButton } from '~/components/back-button'
 import { useLocale } from '~/components/locale-context'
 import { useOptionalSiteEdit } from '~/components/site-edit-context'
 import { TripCard } from '~/components/trips/TripCard'
 import { parseTripsSearch, tripsSearch } from '~/lib/trips-search'
-import { listCategoriesFn, listTripsFn } from '~/server/trips/functions'
+import { listTripsFn } from '~/server/trips/functions'
 import { getWishlistIdsFn } from '~/server/content/functions'
 
 const COMPARE_KEY = 'trip-compare-ids'
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_site/trips/')({
   loader: async ({ deps }) => {
     const days = deps.days === '1' || deps.days === '2' ? Number(deps.days) : undefined
     const sort = (deps.sort as 'price_asc' | 'price_desc' | 'popular' | 'newest') || 'newest'
-    const [tripsRaw, categories, wishlistIds] = await Promise.all([
+    const [tripsRaw, wishlistIds] = await Promise.all([
       listTripsFn({
         data: {
           search: deps.q || undefined,
@@ -28,11 +28,10 @@ export const Route = createFileRoute('/_site/trips/')({
           maxDuration: days,
         },
       }),
-      listCategoriesFn(),
       getWishlistIdsFn(),
     ])
     const trips = sort === 'popular' ? tripsRaw.slice(0, 4) : tripsRaw
-    return { trips, categories, wishlistIds }
+    return { trips, wishlistIds }
   },
   component: TripsPage,
 })
@@ -42,12 +41,11 @@ function durationPillClass(active: boolean, activeClass: string) {
 }
 
 function TripsPage() {
-  const { trips, categories, wishlistIds } = Route.useLoaderData()
+  const { trips, wishlistIds } = Route.useLoaderData()
   const search = Route.useSearch()
   const { user } = useLoaderData({ from: '/_site' })
   const { t, locale } = useLocale()
   const edit = useOptionalSiteEdit()
-  const navigate = useNavigate()
   const [compareIds, setCompareIds] = useState<string[]>(() => {
     if (typeof window === 'undefined') return []
     try { return JSON.parse(localStorage.getItem(COMPARE_KEY) || '[]') } catch { return [] }
@@ -125,41 +123,6 @@ function TripsPage() {
           International
         </Link>
       </div>
-
-      <form
-        key={`${search.q}-${search.category}-${search.sort}-${search.days}`}
-        className="mt-6 grid gap-3 rounded-2xl border border-border bg-card p-4 md:grid-cols-5"
-        onSubmit={(e) => {
-          e.preventDefault()
-          const fd = new FormData(e.currentTarget)
-          navigate({
-            to: '/trips',
-            search: tripsSearch({
-              ...search,
-              q: String(fd.get('q') || ''),
-              category: String(fd.get('category') || ''),
-              sort: String(fd.get('sort') || 'newest'),
-            }),
-          })
-        }}
-      >
-        <input name="q" defaultValue={search.q} placeholder={t('searchTrips')} className="input md:col-span-2" />
-        <select name="category" defaultValue={search.category} className="input">
-          <option value="">{t('allCategories')}</option>
-          {categories
-            .filter((c) => c.slug !== 'one-day-trip' && c.slug !== 'two-day-trip')
-            .map((c) => (
-              <option key={c.id} value={c.slug}>{c.name}</option>
-            ))}
-        </select>
-        <select name="sort" defaultValue={search.sort} className="input">
-          <option value="newest">Newest</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-          <option value="popular">Popular</option>
-        </select>
-        <button type="submit" className="btn-primary">{t('filterBy')}</button>
-      </form>
 
       {compareIds.length > 0 && (
         <div className="mt-4 flex items-center gap-3 rounded-xl bg-accent px-4 py-2">

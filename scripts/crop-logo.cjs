@@ -40,6 +40,22 @@ function isGold(r, g, b) {
   )
 }
 
+/** Anti-aliased / slightly dim gold strokes on the ring and letterforms. */
+function isEmblemGold(r, g, b, a) {
+  if (a < 8) return false
+  if (isGold(r, g, b)) return true
+  const L = lum(r, g, b)
+  return L > 78 && r > 120 && g > 88 && b < 130 && r - b > 35 && g - b > 12
+}
+
+/** Thin crown filigree and outer ring hairlines. */
+function isThinGold(r, g, b, a) {
+  if (a < 6) return false
+  if (isEmblemGold(r, g, b, a)) return true
+  const L = lum(r, g, b)
+  return L > 62 && r > 95 && g > 68 && b < 145 && r - b > 22 && g - b > 8
+}
+
 /** Dark charcoal inside the Instagram profile badge (not pure black UI chrome). */
 function isBadgeFill(r, g, b) {
   const L = lum(r, g, b)
@@ -83,8 +99,9 @@ function detectBadgeCircle(data, w, h, hintCy) {
 }
 
 function detectGoldBounds(data, w, h) {
-  const y0 = Math.floor(h * 0.12)
-  const y1 = Math.floor(h * 0.68)
+  const y0 = Math.floor(h * 0.08)
+  /** Include NEGUS banner below the shield (was clipped at ~72% height). */
+  const y1 = Math.floor(h * 0.94)
   const points = []
   for (let y = y0; y < y1; y++) {
     for (let x = 0; x < w; x++) {
@@ -97,21 +114,55 @@ function detectGoldBounds(data, w, h) {
   let minx = w,
     miny = h,
     maxx = 0,
-    maxy = 0,
-    sx = 0,
-    sy = 0
+    maxy = 0
   for (const [x, y] of points) {
-    sx += x
-    sy += y
     if (x < minx) minx = x
     if (y < miny) miny = y
     if (x > maxx) maxx = x
     if (y > maxy) maxy = y
   }
-  const cx = sx / points.length
-  const cy = sy / points.length
-  const half = Math.max((maxx - minx) / 2, (maxy - miny) / 2)
-  return { cx, cy, radius: half * 1.34, points: points.length, minx, miny, maxx, maxy }
+
+  /** Crown tips are often softer gold — extend top within the emblem column only. */
+  const xPad = Math.round((maxx - minx) * 0.12)
+  const xLo = Math.max(0, minx - xPad)
+  const xHi = Math.min(w - 1, maxx + xPad)
+  const crownY0 = Math.floor(h * 0.22)
+  for (let y = crownY0; y < miny; y++) {
+    for (let x = xLo; x <= xHi; x++) {
+      const i = (y * w + x) * 4
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      const a = data[i + 3]
+      if (isThinGold(r, g, b, a)) {
+        if (y < miny) miny = y
+        if (x < minx) minx = x
+        if (x > maxx) maxx = x
+      }
+    }
+  }
+
+  const bboxCx = (minx + maxx) / 2
+  /** Geometric vertical center so the crown is not clipped when NEGUS pulls the centroid down. */
+  const bboxCy = (miny + maxy) / 2
+  const halfW = (maxx - minx) / 2
+  const halfH = (maxy - miny) / 2
+  const reachTop = bboxCy - miny
+  const reachBottom = maxy - bboxCy
+  const reachSide = halfW
+  const radius = Math.max(reachTop, reachBottom, reachSide) * 1.17
+  return {
+    cx: bboxCx,
+    cy: bboxCy,
+    radius,
+    points: points.length,
+    minx,
+    miny,
+    maxx,
+    maxy,
+    halfW,
+    halfH,
+  }
 }
 
 function clampSquare(cx, cy, radius, w, h) {
@@ -137,10 +188,7 @@ async function main() {
   const badge = detectBadgeCircle(data, w, h, gold.cy)
   const cx = gold.cx
   const cy = gold.cy
-  let radius = gold.radius
-  if (badge && Math.abs(badge.cy - gold.cy) < h * 0.12) {
-    radius = Math.min(Math.max(badge.radius, gold.radius), gold.radius * 1.12)
-  }
+  const radius = gold.radius
 
   const crop = clampSquare(cx, cy, radius, w, h)
   console.log({
@@ -155,44 +203,96 @@ async function main() {
   const ARTWORK_SCALE = 0.9
   const OUT = 640
   const inner = Math.round(OUT * ARTWORK_SCALE)
-  const DISK = { r: 14, g: 14, b: 16, alpha: 1 }
+  /** Midnight navy — matches --negus-logo-fill (#0f1729) baked into the disk. */
+  const LOGO_DISK = { r: 15, g: 23, b: 41 }
+  const FAVICON_DISK = LOGO_DISK
 
   const scaled = await sharp(src)
     .extract({ left: crop.left, top: crop.top, width: crop.side, height: crop.side })
-    .resize(inner, inner)
-    .png()
-    .toBuffer()
-
-  const padded = await sharp({
-    create: {
-      width: OUT,
-      height: OUT,
-      channels: 4,
-      background: DISK,
-    },
-  })
-    .composite([{ input: scaled, gravity: 'center' }])
+    .resize(inner, inner, { kernel: sharp.kernel.lanczos3 })
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true })
 
-  const out = Buffer.from(padded.data)
-  const ow = padded.info.width
-  const oh = padded.info.height
-  const ocx = ow / 2
-  const ocy = oh / 2
-  const orr = Math.min(ocx, ocy) - 0.5
-  for (let y = 0; y < oh; y++) {
-    for (let x = 0; x < ow; x++) {
-      const i = (y * ow + x) * 4
+  const artW = scaled.info.width
+  const artH = scaled.info.height
+  const artData = scaled.data
+
+  const artLeft = Math.floor((OUT - artW) / 2)
+  const artTop = Math.floor((OUT - artH) / 2)
+
+  const out = Buffer.alloc(OUT * OUT * 4, 0)
+  const ocx = OUT / 2
+  const ocy = OUT / 2
+  const orr = OUT / 2 - 0.5
+  const orr2 = orr * orr
+
+  for (let y = 0; y < OUT; y++) {
+    for (let x = 0; x < OUT; x++) {
+      const i = (y * OUT + x) * 4
       const dx = x - ocx
       const dy = y - ocy
-      if (dx * dx + dy * dy > orr * orr) out[i + 3] = 0
+      if (dx * dx + dy * dy > orr2) continue
+
+      out[i] = LOGO_DISK.r
+      out[i + 1] = LOGO_DISK.g
+      out[i + 2] = LOGO_DISK.b
+      out[i + 3] = 255
+
+      const ax = x - artLeft
+      const ay = y - artTop
+      if (ax >= 0 && ax < artW && ay >= 0 && ay < artH) {
+        const ai = (ay * artW + ax) * 4
+        const r = artData[ai]
+        const g = artData[ai + 1]
+        const b = artData[ai + 2]
+        const a = artData[ai + 3]
+        if (isThinGold(r, g, b, a)) {
+          out[i] = r
+          out[i + 1] = g
+          out[i + 2] = b
+          out[i + 3] = 255
+        }
+      }
     }
   }
 
-  await sharp(out, { raw: { width: ow, height: oh, channels: 4 } }).png().toFile(destPng)
-  await sharp(destPng).resize(96, 96).png().toFile(path.join(destDir, 'favicon.png'))
+  await sharp(out, { raw: { width: OUT, height: OUT, channels: 4 } }).png().toFile(destPng)
+
+  const FAV = 96
+  const fav = Buffer.alloc(FAV * FAV * 4, 0)
+  const fcx = FAV / 2
+  const fcy = FAV / 2
+  const favDiskR = FAV * 0.46
+  const favDiskR2 = favDiskR * favDiskR
+  for (let y = 0; y < FAV; y++) {
+    for (let x = 0; x < FAV; x++) {
+      const i = (y * FAV + x) * 4
+      const dx = x - fcx
+      const dy = y - fcy
+      const d2 = dx * dx + dy * dy
+      if (d2 > favDiskR2) continue
+
+      const sx = Math.round((x / (FAV - 1)) * (OUT - 1))
+      const sy = Math.round((y / (FAV - 1)) * (OUT - 1))
+      const oi = (sy * OUT + sx) * 4
+      const emblemA = out[oi + 3]
+      if (emblemA > 12) {
+        fav[i] = out[oi]
+        fav[i + 1] = out[oi + 1]
+        fav[i + 2] = out[oi + 2]
+        fav[i + 3] = emblemA
+      } else {
+        fav[i] = FAVICON_DISK.r
+        fav[i + 1] = FAVICON_DISK.g
+        fav[i + 2] = FAVICON_DISK.b
+        fav[i + 3] = 255
+      }
+    }
+  }
+  await sharp(fav, { raw: { width: FAV, height: FAV, channels: 4 } })
+    .png()
+    .toFile(path.join(destDir, 'favicon.png'))
   console.log('ok', { destPng, size: `${OUT}x${OUT}`, artworkScale: ARTWORK_SCALE })
 }
 

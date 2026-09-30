@@ -26,7 +26,6 @@ function BlogListPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
       <BackButton fallbackTo="/" className="mb-6" />
-      <h1 className="font-display text-3xl font-bold">{t('travelTips')}</h1>
       {edit?.isAdmin && (
         <p className="mt-2 text-sm text-primary">Open a post to edit its title and body on that page.</p>
       )}

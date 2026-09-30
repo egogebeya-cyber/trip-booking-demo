@@ -13,10 +13,11 @@ const frameClasses = {
   hero: 'ring-2 ring-primary shadow-[0_0_40px_rgb(212_175_55/0.35)]',
 } as const
 
+/** 2× CSS box size for crisp downscale from 640px master. */
 const intrinsicSize = {
-  compact: 40,
-  header: 56,
-  hero: 192,
+  compact: 80,
+  header: 112,
+  hero: 384,
 } as const
 
 type BrandLogoMarkProps = {
@@ -30,7 +31,7 @@ export function BrandLogoMark({ size = 'header', className, alt = '' }: BrandLog
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full',
+        'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-logo-fill',
         sizeClasses[size],
         frameClasses[size],
         className,
@@ -39,10 +40,13 @@ export function BrandLogoMark({ size = 'header', className, alt = '' }: BrandLog
       <img
         src={BRAND_LOGO_PATH}
         alt={alt}
-        className="h-full w-full object-contain"
+        className={cn(
+          'h-full w-full object-contain',
+        )}
         width={px}
         height={px}
         decoding="async"
+        fetchPriority={size === 'hero' ? 'high' : undefined}
       />
     </span>
   )
