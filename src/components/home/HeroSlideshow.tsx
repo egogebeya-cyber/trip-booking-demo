@@ -22,7 +22,7 @@ type HeroSlideshowProps = {
 export function HeroSlideshow({
   images,
   videoUrl,
-  intervalMs = 5000,
+  intervalMs = 3000,
   className,
   children,
   onReplaceSlide,
@@ -38,14 +38,31 @@ export function HeroSlideshow({
 
   useEffect(() => {
     if (slides.length <= 1) return
-    const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % slides.length)
-    }, intervalMs)
-    return () => window.clearInterval(timer)
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let timer: number | undefined
+
+    const syncAutoplay = () => {
+      if (timer !== undefined) {
+        window.clearInterval(timer)
+        timer = undefined
+      }
+      if (reducedMotion.matches) return
+      timer = window.setInterval(() => {
+        setIndex((current) => (current + 1) % slides.length)
+      }, intervalMs)
+    }
+
+    syncAutoplay()
+    reducedMotion.addEventListener('change', syncAutoplay)
+    return () => {
+      reducedMotion.removeEventListener('change', syncAutoplay)
+      if (timer !== undefined) window.clearInterval(timer)
+    }
   }, [slides.length, intervalMs])
 
   return (
-    <section className={cn('relative min-h-[22rem] overflow-hidden px-4 py-16 text-white md:min-h-[34rem] md:py-28', className)}>
+    <section className={cn('relative min-h-[20rem] overflow-hidden px-4 py-12 text-white sm:min-h-[22rem] sm:py-16 md:min-h-[34rem] md:py-28', className)}>
       {isDirectVideo && (
         <video
           className="absolute inset-0 h-full w-full object-cover"
@@ -77,7 +94,7 @@ export function HeroSlideshow({
           aria-hidden={i !== index}
         />
       ))}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/70 to-[#121212]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-background/90" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgb(212_175_55/0.2),transparent_48%)]" />
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">{children}</div>
@@ -106,22 +123,6 @@ export function HeroSlideshow({
         </label>
       )}
 
-      {slides.length > 1 && (
-        <div className="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Show slide ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className={cn(
-                'h-2 rounded-full transition-all',
-                i === index ? 'w-6 bg-primary' : 'w-2 bg-primary/40 hover:bg-primary/70',
-              )}
-            />
-          ))}
-        </div>
-      )}
     </section>
   )
 }

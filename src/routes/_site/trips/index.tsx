@@ -15,12 +15,13 @@ export const Route = createFileRoute('/_site/trips/')({
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
     const days = deps.days === '1' || deps.days === '2' ? Number(deps.days) : undefined
-    const [trips, categories, wishlistIds] = await Promise.all([
+    const sort = (deps.sort as 'price_asc' | 'price_desc' | 'popular' | 'newest') || 'newest'
+    const [tripsRaw, categories, wishlistIds] = await Promise.all([
       listTripsFn({
         data: {
           search: deps.q || undefined,
           category: deps.category || undefined,
-          sort: (deps.sort as 'price_asc' | 'price_desc' | 'popular' | 'newest') || 'newest',
+          sort,
           minPrice: deps.minPrice,
           maxPrice: deps.maxPrice,
           minDuration: days,
@@ -30,13 +31,14 @@ export const Route = createFileRoute('/_site/trips/')({
       listCategoriesFn(),
       getWishlistIdsFn(),
     ])
+    const trips = sort === 'popular' ? tripsRaw.slice(0, 4) : tripsRaw
     return { trips, categories, wishlistIds }
   },
   component: TripsPage,
 })
 
 function durationPillClass(active: boolean, activeClass: string) {
-  return `rounded-full px-4 py-2 text-sm font-medium ${active ? activeClass : 'bg-accent text-foreground'}`
+  return `inline-flex min-h-11 items-center rounded-full px-4 py-2 text-sm font-medium ${active ? activeClass : 'bg-accent text-foreground'}`
 }
 
 function TripsPage() {
@@ -60,7 +62,7 @@ function TripsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
       <BackButton fallbackTo="/" className="mb-6" />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -83,10 +85,23 @@ function TripsPage() {
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
           to="/trips"
-          search={tripsSearch({ ...search, days: '', category: '' })}
-          className={durationPillClass(!search.days && search.category !== 'international', 'bg-primary text-white')}
+          search={tripsSearch({ ...search, days: '', category: '', sort: 'newest' })}
+          className={durationPillClass(
+            !search.days && search.category !== 'international' && search.sort !== 'popular',
+            'bg-primary text-white',
+          )}
         >
           All trips
+        </Link>
+        <Link
+          to="/trips"
+          search={tripsSearch({ ...search, days: '', category: '', sort: 'popular' })}
+          className={durationPillClass(
+            search.sort === 'popular' && !search.days && search.category !== 'international',
+            'bg-accent text-foreground',
+          )}
+        >
+          Popular
         </Link>
         <Link
           to="/trips"

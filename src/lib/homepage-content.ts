@@ -18,7 +18,10 @@ export type HomepageContent = {
   teamTitle: string
   galleryKicker: string
   galleryTitle: string
-  blogKicker: string
+  homeVideoUrl: string
+  homeVideoTitle: string
+  homeVideoDesc: string
+  homeVideoPosterUrl: string
   newsletterTitle: string
   newsletterDesc: string
   testimonialsKicker: string
@@ -57,7 +60,10 @@ export const DEFAULT_HOMEPAGE: HomepageContent = {
   teamTitle: 'Expert guides',
   galleryKicker: 'Gallery',
   galleryTitle: 'Trips in action',
-  blogKicker: 'Latest news',
+  homeVideoUrl: '/videos/hero-travel.mp4?v=2',
+  homeVideoTitle: 'Experience the journey',
+  homeVideoDesc: 'A glimpse of the landscapes and moments waiting on your next Negus Events trip.',
+  homeVideoPosterUrl: '',
   newsletterTitle: 'Stay updated',
   newsletterDesc: 'Subscribe for trip dates, offers, and discounts. Chat with us on WhatsApp or Telegram anytime.',
   testimonialsKicker: 'Testimonials',

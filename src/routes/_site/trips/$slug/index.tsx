@@ -20,6 +20,7 @@ import { PriceTag } from '~/components/price-tag'
 import { ReviewForm } from '~/components/review-form'
 import { WaitlistForm } from '~/components/waitlist-form'
 import { TripAdminControls } from '~/components/trips/TripAdminControls'
+import { MobileTripBookBar } from '~/components/trips/MobileTripBookBar'
 import { WishlistButton } from '~/components/wishlist-button'
 import { BackButton } from '~/components/back-button'
 import { formatGroupDiscountSummary } from '~/lib/group-discount'
@@ -138,7 +139,7 @@ function TripDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
       <BackButton fallbackTo="/trips" label={t('trips')} className="mb-6" />
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
@@ -498,6 +499,10 @@ function TripDetailPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {!edit?.isAdmin && (
+        <MobileTripBookBar slug={trip.slug} price={trip.price} priceUsd={trip.priceUsd} />
       )}
     </div>
   )

@@ -142,7 +142,7 @@ function BookTripPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-6 md:py-8">
       <BackButton fallbackTo={`/trips/${slug}`} label={trip.title} />
       <h1 className="mt-4 font-display text-3xl font-bold">{t('bookThisTrip')}</h1>
       {availableDates.length === 0 && (

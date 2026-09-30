@@ -7,6 +7,8 @@ import {
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
 import { LocaleProvider } from '~/components/locale-context'
 import { NotFound } from '~/components/NotFound'
+import { ThemeProvider } from '~/components/theme-context'
+import { NEGUS_THEME_INIT_SCRIPT } from '~/lib/theme'
 import appCss from '~/styles.css?url'
 
 export const Route = createRootRoute({
@@ -29,14 +31,17 @@ export const Route = createRootRoute({
 
 function RootDocument() {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: NEGUS_THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
       <body className="min-h-dvh antialiased">
-        <LocaleProvider>
-          <Outlet />
-        </LocaleProvider>
+        <ThemeProvider>
+          <LocaleProvider>
+            <Outlet />
+          </LocaleProvider>
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

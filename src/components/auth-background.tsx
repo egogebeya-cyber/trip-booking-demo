@@ -4,7 +4,7 @@ const AUTH_BG = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=
 
 export function AuthBackground({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-12">
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:py-12">
       <img src={AUTH_BG} alt="" className="absolute inset-0 h-full w-full object-cover" />
       <div className="absolute inset-0 bg-[#2c2416]/55" />
       <div className="absolute left-4 top-4 z-20">

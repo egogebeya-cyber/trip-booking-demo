@@ -1,7 +1,9 @@
-import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { Outlet, createFileRoute, useRouterState } from '@tanstack/react-router'
+import { cn } from '~/lib/utils'
 import { CookieConsent } from '~/components/layout/CookieConsent'
 import { Footer } from '~/components/layout/Footer'
 import { Header } from '~/components/layout/Header'
+import { MobileBottomNav } from '~/components/layout/MobileBottomNav'
 import { AdminEditBar } from '~/components/layout/AdminEditBar'
 import { TrustBadges } from '~/components/layout/TrustBadges'
 import { SupportChat } from '~/components/layout/SupportChat'
@@ -19,13 +21,19 @@ export const Route = createFileRoute('/_site')({
 
 function SiteLayout() {
   const { user, settings } = Route.useLoaderData()
-
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const isTripDetail = /^\/trips\/[^/]+\/?$/.test(pathname)
   return (
     <SiteEditProvider user={user} settings={settings}>
-      <div className="flex min-h-dvh flex-col">
+      <div className="flex min-h-dvh flex-col pb-[var(--mobile-nav-height)] md:pb-0">
         <AdminEditBar />
         <Header user={user} settings={settings} />
-        <main className="min-w-0 flex-1 overflow-x-clip">
+        <main
+          className={cn(
+            'site-main min-w-0 flex-1 overflow-x-clip',
+            isTripDetail && 'site-main-trip-detail',
+          )}
+        >
           <Outlet />
         </main>
         <TrustBadges />
@@ -39,6 +47,7 @@ function SiteLayout() {
           user={user}
         />
         <CookieConsent />
+        <MobileBottomNav />
         {settings?.analyticsId && (
           <script
             dangerouslySetInnerHTML={{

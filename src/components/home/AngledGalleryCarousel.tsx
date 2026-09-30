@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { InlineImage } from '~/components/inline-image'
 import { cn } from '~/lib/utils'
@@ -63,23 +63,152 @@ export function AngledGalleryCarousel({
   const showAddSlot = Boolean(isAdmin && onAdd)
   const slideCount = images.length + (showAddSlot ? 1 : 0)
   const [active, setActive] = useState(0)
+  const touchStartX = useRef<number | null>(null)
+  const slideCountRef = useRef(slideCount)
+  const autoplayPausedRef = useRef(false)
+  const deferResumeOnPointerUpRef = useRef(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const reducedMotionRef = useRef(false)
+
+  slideCountRef.current = slideCount
+
+  const clearAutoplayInterval = () => {
+    if (intervalRef.current != null) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }
+
+  const clearResumeTimeout = () => {
+    if (resumeTimeoutRef.current != null) {
+      clearTimeout(resumeTimeoutRef.current)
+      resumeTimeoutRef.current = null
+    }
+  }
+
+  const resumeAutoplay = () => {
+    if (reducedMotionRef.current || slideCountRef.current <= 1) return
+    autoplayPausedRef.current = false
+    clearAutoplayInterval()
+    intervalRef.current = setInterval(() => {
+      setActive((current) => (current + 1) % slideCountRef.current)
+    }, 5000)
+  }
+
+  const pauseAutoplay = (idleResumeMs?: number) => {
+    autoplayPausedRef.current = true
+    clearAutoplayInterval()
+    clearResumeTimeout()
+    if (idleResumeMs != null) {
+      deferResumeOnPointerUpRef.current = true
+      resumeTimeoutRef.current = setTimeout(() => {
+        deferResumeOnPointerUpRef.current = false
+        resumeAutoplay()
+      }, idleResumeMs)
+    } else {
+      deferResumeOnPointerUpRef.current = false
+    }
+  }
+
+  const tryResumeOnPointerUp = () => {
+    if (!deferResumeOnPointerUpRef.current) {
+      resumeAutoplay()
+    }
+  }
 
   useEffect(() => {
     if (slideCount === 0) return
     setActive((current) => Math.min(current, slideCount - 1))
   }, [slideCount])
 
+  useEffect(() => {
+    if (slideCount <= 1) {
+      clearAutoplayInterval()
+      clearResumeTimeout()
+      return
+    }
+
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const syncReducedMotion = () => {
+      reducedMotionRef.current = mq.matches
+      if (mq.matches) {
+        clearAutoplayInterval()
+        clearResumeTimeout()
+      } else if (!autoplayPausedRef.current) {
+        resumeAutoplay()
+      }
+    }
+
+    syncReducedMotion()
+    mq.addEventListener('change', syncReducedMotion)
+
+    if (!reducedMotionRef.current && !autoplayPausedRef.current) {
+      resumeAutoplay()
+    }
+
+    return () => {
+      mq.removeEventListener('change', syncReducedMotion)
+      clearAutoplayInterval()
+      clearResumeTimeout()
+    }
+  }, [slideCount])
+
   if (slideCount === 0) return null
 
   const go = (dir: -1 | 1) => {
+    pauseAutoplay(4000)
     setActive((current) => (current + dir + slideCount) % slideCount)
+  }
+
+  const goToSlide = (index: number) => {
+    pauseAutoplay(4000)
+    setActive(index)
+  }
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    pauseAutoplay()
+    touchStartX.current = e.touches[0]?.clientX ?? null
+  }
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStartX.current
+    touchStartX.current = null
+    if (start == null || slideCount <= 1) {
+      tryResumeOnPointerUp()
+      return
+    }
+    const end = e.changedTouches[0]?.clientX
+    if (end == null) {
+      tryResumeOnPointerUp()
+      return
+    }
+    const delta = end - start
+    if (Math.abs(delta) < 48) {
+      tryResumeOnPointerUp()
+      return
+    }
+    go(delta > 0 ? -1 : 1)
+  }
+
+  const onPointerDown = () => {
+    pauseAutoplay()
+  }
+
+  const onPointerUp = () => {
+    tryResumeOnPointerUp()
   }
 
   return (
     <div className="relative mt-2">
       <div
-        className="relative mx-auto h-[24rem] w-full max-w-6xl sm:h-[28rem] md:h-[32rem]"
+        className="relative mx-auto h-[20rem] w-full max-w-6xl touch-pan-y sm:h-[28rem] md:h-[32rem]"
         style={{ perspective: '1600px', perspectiveOrigin: '50% 48%' }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
       >
         <div className="relative h-full w-full" style={{ transformStyle: 'preserve-3d' }}>
           {Array.from({ length: slideCount }, (_, i) => {
@@ -111,12 +240,12 @@ export function AngledGalleryCarousel({
                   backfaceVisibility: 'hidden',
                 }}
                 onClick={() => {
-                  if (!isCenter) setActive(i)
+                  if (!isCenter) goToSlide(i)
                 }}
                 onKeyDown={(e) => {
                   if (!isCenter && (e.key === 'Enter' || e.key === ' ')) {
                     e.preventDefault()
-                    setActive(i)
+                    goToSlide(i)
                   }
                 }}
               >
@@ -157,7 +286,7 @@ export function AngledGalleryCarousel({
           <button
             type="button"
             aria-label="Previous gallery photo"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 text-primary transition hover:border-primary hover:bg-primary/10"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-primary/50 text-primary transition hover:border-primary hover:bg-primary/10 active:scale-95"
             onClick={() => go(-1)}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -169,17 +298,17 @@ export function AngledGalleryCarousel({
                 type="button"
                 aria-label={`Go to gallery photo ${i + 1}`}
                 className={cn(
-                  'h-2 rounded-full transition-all',
-                  i === active ? 'w-7 bg-primary' : 'w-2 bg-primary/35 hover:bg-primary/60',
+                  'min-h-2 rounded-full transition-all',
+                  i === active ? 'w-7 bg-primary' : 'h-2 w-2 bg-primary/35 hover:bg-primary/60',
                 )}
-                onClick={() => setActive(i)}
+                onClick={() => goToSlide(i)}
               />
             ))}
           </div>
           <button
             type="button"
             aria-label="Next gallery photo"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 text-primary transition hover:border-primary hover:bg-primary/10"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-primary/50 text-primary transition hover:border-primary hover:bg-primary/10 active:scale-95"
             onClick={() => go(1)}
           >
             <ChevronRight className="h-5 w-5" />

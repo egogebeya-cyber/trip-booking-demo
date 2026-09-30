@@ -45,21 +45,21 @@ function ContactPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
       <BackButton fallbackTo="/" className="mb-6" />
       <h1 className="font-display text-3xl font-bold">{t('contactUs')}</h1>
 
-      <div className="mt-6 flex gap-2">
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:w-auto">
         <button
           type="button"
-          className={tab === 'contact' ? 'btn-primary' : 'btn-outline'}
+          className={`${tab === 'contact' ? 'btn-primary' : 'btn-outline'} w-full sm:w-auto`}
           onClick={() => setTab('contact')}
         >
           {t('contactUs')}
         </button>
         <button
           type="button"
-          className={tab === 'group' ? 'btn-primary' : 'btn-outline'}
+          className={`${tab === 'group' ? 'btn-primary' : 'btn-outline'} w-full sm:w-auto`}
           onClick={() => setTab('group')}
         >
           {t('groupInquiry')}

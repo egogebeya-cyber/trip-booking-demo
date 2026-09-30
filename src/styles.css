@@ -6,24 +6,79 @@
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-accent: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
-  /* Exact Negus crest palette: charcoal + metallic gold */
-  --color-background: #121212;
-  --color-foreground: #f3ecd8;
-  --color-muted: #b9a878;
-  --color-card: #1a1a1a;
-  --color-border: #6b5420;
+  /* Negus palette — values switch via html.dark / html.light */
+  --color-background: var(--negus-background);
+  --color-foreground: var(--negus-foreground);
+  --color-muted: var(--negus-muted);
+  --color-card: var(--negus-card);
+  --color-border: var(--negus-border);
   --color-primary: #d4af37;
   --color-primary-foreground: #121212;
   --color-primary-hover: #f1c40f;
   --color-earth: #cba24b;
-  --color-accent: #181818;
+  --color-accent: var(--negus-accent);
   --color-destructive: #c44;
   --color-ring: #d4af37;
-  --color-price: #f6e39f;
+  --color-price: var(--negus-price);
+  --color-header: var(--negus-header);
+  --color-header-foreground: var(--negus-header-foreground);
+  --color-header-muted: var(--negus-header-muted);
+  --color-overlay: var(--negus-overlay);
+}
+
+html.dark {
+  color-scheme: dark;
+  --negus-background: #121212;
+  --negus-foreground: #f3ecd8;
+  --negus-muted: #b9a878;
+  --negus-card: #1a1a1a;
+  --negus-border: #6b5420;
+  --negus-accent: #181818;
+  --negus-price: #f6e39f;
+  --negus-header: #000000;
+  --negus-header-foreground: #f3ecd8;
+  --negus-header-muted: rgb(255 255 255 / 0.65);
+  --negus-overlay: #000000;
+  --negus-nav-shadow: rgb(0 0 0 / 0.45);
+  --negus-body-glow-a: rgb(212 175 55 / 0.18);
+  --negus-body-glow-b: rgb(203 162 75 / 0.08);
+  --negus-body-base: #121212;
+  --negus-section-band: linear-gradient(180deg, #1c1c1c 0%, #141414 45%, #181818 100%);
+  --negus-offer-card-bg: linear-gradient(145deg, rgb(32 32 32), rgb(20 20 20));
+  --negus-offer-card-shadow: 0 10px 28px rgb(0 0 0 / 0.45);
+  --negus-future-trip-bg: linear-gradient(165deg, rgb(34 34 34), rgb(18 18 18));
+  --negus-future-trip-shadow: 0 8px 22px rgb(0 0 0 / 0.4);
+}
+
+html.light {
+  color-scheme: light;
+  --negus-background: #f8f5ee;
+  --negus-foreground: #1c1810;
+  --negus-muted: #6b5d40;
+  --negus-card: #ffffff;
+  --negus-border: #b8922a;
+  --negus-accent: #efe8d8;
+  --negus-price: #8a6914;
+  --negus-header: #faf7f0;
+  --negus-header-foreground: #1c1810;
+  --negus-header-muted: rgb(28 24 16 / 0.62);
+  --negus-overlay: #1c1810;
+  --negus-nav-shadow: rgb(28 24 16 / 0.12);
+  --negus-body-glow-a: rgb(212 175 55 / 0.22);
+  --negus-body-glow-b: rgb(203 162 75 / 0.12);
+  --negus-body-base: #f8f5ee;
+  --negus-section-band: linear-gradient(180deg, #f0ebe0 0%, #f8f5ee 45%, #ece6d8 100%);
+  --negus-offer-card-bg: linear-gradient(145deg, #ffffff, #f3ede0);
+  --negus-offer-card-shadow: 0 10px 28px rgb(28 24 16 / 0.08);
+  --negus-future-trip-bg: linear-gradient(165deg, #ffffff, #f3ede0);
+  --negus-future-trip-shadow: 0 8px 22px rgb(28 24 16 / 0.08);
 }
 
 @layer base {
   *, ::after, ::before { border-color: var(--color-border); }
+  html {
+    --mobile-nav-height: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
   html,
   body {
     background: var(--color-background);
@@ -34,10 +89,11 @@
     font-size: 15px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: rgb(212 175 55 / 0.15);
     background:
-      radial-gradient(900px 420px at 50% -80px, rgb(212 175 55 / 0.18), transparent 60%),
-      radial-gradient(700px 500px at 100% 20%, rgb(203 162 75 / 0.08), transparent 50%),
-      #121212;
+      radial-gradient(900px 420px at 50% -80px, var(--negus-body-glow-a), transparent 60%),
+      radial-gradient(700px 500px at 100% 20%, var(--negus-body-glow-b), transparent 50%),
+      var(--negus-body-base);
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
@@ -65,7 +121,7 @@
   }
 
   .btn-primary {
-    @apply relative inline-flex items-center justify-center overflow-hidden rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-widest text-primary-foreground transition;
+    @apply relative inline-flex min-h-11 items-center justify-center overflow-hidden rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-widest text-primary-foreground transition;
     background-image: linear-gradient(135deg, #f6e39f, #d4af37 45%, #996515);
     box-shadow: 0 8px 25px rgb(212 175 55 / 0.35);
   }
@@ -75,7 +131,7 @@
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-full border-2 border-primary bg-transparent px-6 py-3 text-sm font-semibold uppercase tracking-widest text-primary transition;
+    @apply inline-flex min-h-11 items-center justify-center rounded-full border-2 border-primary bg-transparent px-6 py-3 text-sm font-semibold uppercase tracking-widest text-primary transition;
   }
   .btn-outline:hover {
     @apply bg-primary text-primary-foreground;
@@ -190,5 +246,143 @@
     width: 100%;
     height: 3px;
     background: linear-gradient(90deg, var(--color-primary), transparent);
+  }
+
+  .site-main-trip-detail {
+    padding-bottom: 4.5rem;
+  }
+  @media (min-width: 768px) {
+    .site-main-trip-detail {
+      padding-bottom: 0;
+    }
+  }
+
+}
+
+@media (max-width: 767px) {
+  .section-band-mobile {
+    background: var(--negus-section-band);
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  .home-team-card:hover {
+    transform: none;
+    border-color: rgb(212 175 55 / 0.4);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .home-offer-card {
+    border-color: rgb(212 175 55 / 0.55);
+    background: var(--negus-offer-card-bg);
+    box-shadow:
+      var(--negus-offer-card-shadow),
+      inset 3px 0 0 var(--color-primary);
+  }
+
+  .home-offer-card:hover {
+    transform: none;
+    border-color: rgb(212 175 55 / 0.65);
+    box-shadow:
+      var(--negus-offer-card-shadow),
+      inset 3px 0 0 var(--color-primary);
+  }
+
+  .home-offer-card-icon {
+    box-shadow: 0 0 16px rgb(212 175 55 / 0.2);
+  }
+
+  .home-offer-cta {
+    display: inline-flex;
+    min-height: 2.75rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid rgb(212 175 55 / 0.55);
+    background: rgb(212 175 55 / 0.12);
+    padding: 0.625rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  .home-offer-cta--compact {
+    min-height: 2.25rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+
+  .home-offer-cta--narrow {
+    min-height: 1.875rem;
+    padding: 0.375rem 0.375rem;
+    font-size: 0.5625rem;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+  }
+
+  .home-future-grid {
+    align-items: stretch;
+  }
+
+  .home-future-trip {
+    border-color: rgb(212 175 55 / 0.55);
+    border-radius: 0.75rem;
+    background: var(--negus-future-trip-bg);
+    box-shadow:
+      var(--negus-future-trip-shadow),
+      inset 0 3px 0 var(--color-primary);
+  }
+
+  .home-future-trip:hover {
+    transform: none;
+    border-color: rgb(212 175 55 / 0.65);
+    box-shadow:
+      var(--negus-future-trip-shadow),
+      inset 0 3px 0 var(--color-primary);
+  }
+
+  .home-future-trip-media {
+    border-bottom: 1px solid rgb(212 175 55 / 0.35);
+  }
+
+  .home-future-trip-media img {
+    box-shadow: inset 0 -24px 32px rgb(0 0 0 / 0.35);
+  }
+
+  .home-future-trip img {
+    box-shadow: 0 0 12px rgb(212 175 55 / 0.15);
+  }
+
+  .home-testimonial-card {
+    border-color: rgb(212 175 55 / 0.55);
+    background: var(--negus-offer-card-bg);
+    box-shadow:
+      var(--negus-offer-card-shadow),
+      inset 3px 0 0 var(--color-primary);
+  }
+
+  .home-testimonial-card:hover {
+    transform: none;
+    border-color: rgb(212 175 55 / 0.65);
+    box-shadow:
+      var(--negus-offer-card-shadow),
+      inset 3px 0 0 var(--color-primary);
+  }
+}
+
+@media (min-width: 768px) {
+  .home-offer-cta {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    color: var(--color-primary);
   }
 }

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+﻿import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { db } from './index'
 import {
@@ -35,7 +35,7 @@ export async function ensureDayTripSeed() {
       telegramUsername: 'TripExplorerSupport',
       heroTitle: 'Discover Amazing Trips',
       heroSubtitle: 'Day trips from Addis, plus Dubai, Kenya, and Tanzania',
-      heroVideoUrl: 'https://cdn.coverr.co/videos/coverr-drone-shot-of-a-lake-in-the-mountains-1584/1080p.mp4',
+      heroVideoUrl: '/videos/hero-travel.mp4',
       facebookUrl: 'https://facebook.com',
       instagramUrl: 'https://instagram.com',
       tiktokUrl: 'https://www.tiktok.com',
@@ -60,9 +60,9 @@ export async function ensureDayTripSeed() {
       titleAm: 'Trip to Wenchi Crater Lake',
       slug: 'wenchi-crater-lake-day-trip',
       description:
-        'Escape the city and discover nature at Wenchi Crater Lake — a beautiful one-day group adventure about 150 km from Addis Ababa. Perfect for hiking, travel, and exploring with friends. All-inclusive day trip price.',
+        'Escape the city and discover nature at Wenchi Crater Lake \u2014 a beautiful one-day group adventure about 150 km from Addis Ababa. Perfect for hiking, travel, and exploring with friends. All-inclusive day trip price.',
       descriptionAm:
-        'Escape the city and discover nature at Wenchi Crater Lake — a one-day group adventure about 150 km from Addis Ababa.',
+        'Escape the city and discover nature at Wenchi Crater Lake \u2014 a one-day group adventure about 150 km from Addis Ababa.',
       destination: 'Wenchi Crater Lake (150 km from Addis Ababa)',
       price: 4300,
       durationDays: 1,
@@ -77,7 +77,7 @@ export async function ensureDayTripSeed() {
         'One Day Adventure',
         'All Inclusive',
         'Group Trip',
-        'Hiking · Travel · Explore',
+        'Hiking \u00B7 Travel \u00B7 Explore',
         'Escape the city. Discover nature.',
       ]),
       includedItems: JSON.stringify([
@@ -342,7 +342,7 @@ export async function ensureDayTripSeed() {
 
 We leave Addis Ababa in the morning and drive about 150 km to Wenchi Crater Lake. The crater is a bowl of green hills around still blue water, with a small island in the middle. After a short walk (or horse ride) down to the shore, the group takes in the views, enjoys lunch, and returns to Addis the same evening.
 
-The photo at the top is from the lake. The video below is a short look at hiking around Wonchi — a real clip from Visit Ethiopia Tours, used here as an example.
+The photo at the top is from the lake. The video below is a short look at hiking around Wonchi \u2014 a real clip from Visit Ethiopia Tours, used here as an example.
 
 Want to join the next departure? Book the Trip to Wenchi Crater Lake on this website, or call / WhatsApp 0974332069.`,
       isPublished: true,

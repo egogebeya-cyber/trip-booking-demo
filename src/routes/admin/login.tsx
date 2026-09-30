@@ -49,7 +49,7 @@ function AdminLoginPage() {
 
   return (
     <AuthBackground>
-      <form onSubmit={submit} className="card w-full p-6">
+      <form onSubmit={submit} className="card w-full p-6 sm:p-8">
         <h1 className="font-display text-2xl font-bold">Admin Login</h1>
         <p className="mt-1 text-sm text-muted">Sign in to manage your trip booking site.</p>
         <p className="mt-2 text-xs text-muted">Demo: admin@tripexplorer.com / admin123 · Negus Events site</p>

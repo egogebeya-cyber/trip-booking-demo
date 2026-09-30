@@ -17,27 +17,27 @@ export function Footer({ settings, user }: FooterProps) {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-auto border-t-[3px] border-primary bg-black text-white">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-4">
+    <footer className="mt-auto border-t-[3px] border-primary bg-header text-header-foreground">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-4 md:py-12">
         <div>
           <div className="flex items-center gap-3">
             <img src={BRAND_LOGO_PATH} alt="" className="h-14 w-14 rounded-full ring-1 ring-primary/60" width={56} height={56} />
             <h3 className="font-display text-lg font-semibold text-primary">{settings?.businessName ?? BRAND_NAME}</h3>
           </div>
-          <p className="mt-2 text-sm text-white/70">{settings?.heroSubtitle}</p>
+          <p className="mt-2 text-sm text-header-muted">{settings?.heroSubtitle}</p>
           <div className="mt-4 flex gap-3">
             {settings?.facebookUrl && (
-              <a href={settings.facebookUrl} target="_blank" rel="noreferrer" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
+              <a href={settings.facebookUrl} target="_blank" rel="noreferrer" className="rounded-full bg-header-foreground/10 p-2 hover:bg-header-foreground/20">
                 <Facebook className="h-4 w-4" />
               </a>
             )}
             {settings?.instagramUrl && (
-              <a href={settings.instagramUrl} target="_blank" rel="noreferrer" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
+              <a href={settings.instagramUrl} target="_blank" rel="noreferrer" className="rounded-full bg-header-foreground/10 p-2 hover:bg-header-foreground/20">
                 <Instagram className="h-4 w-4" />
               </a>
             )}
             {settings?.tiktokUrl && (
-              <a href={settings.tiktokUrl} target="_blank" rel="noreferrer" className="rounded-full bg-white/10 p-2 hover:bg-white/20" aria-label="TikTok">
+              <a href={settings.tiktokUrl} target="_blank" rel="noreferrer" className="rounded-full bg-header-foreground/10 p-2 hover:bg-header-foreground/20" aria-label="TikTok">
                 <TikTokIcon className="h-4 w-4" />
               </a>
             )}
@@ -45,22 +45,22 @@ export function Footer({ settings, user }: FooterProps) {
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white/60">{t('contact')}</h4>
+          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-header-muted">{t('contact')}</h4>
           {settings?.phone && (
-            <p className="flex items-center gap-2 text-sm text-white/80"><Phone className="h-4 w-4" />{settings.phone}</p>
+            <p className="flex items-center gap-2 text-sm text-header-foreground/80"><Phone className="h-4 w-4" />{settings.phone}</p>
           )}
           {settings?.email && (
-            <p className="mt-2 flex items-center gap-2 text-sm text-white/80"><Mail className="h-4 w-4" />{settings.email}</p>
+            <p className="mt-2 flex items-center gap-2 text-sm text-header-foreground/80"><Mail className="h-4 w-4" />{settings.email}</p>
           )}
           {settings?.address && (
-            <p className="mt-2 flex items-start gap-2 text-sm text-white/80"><MapPin className="mt-0.5 h-4 w-4 shrink-0" />{settings.address}</p>
+            <p className="mt-2 flex items-start gap-2 text-sm text-header-foreground/80"><MapPin className="mt-0.5 h-4 w-4 shrink-0" />{settings.address}</p>
           )}
           {settings?.whatsappNumber && (
             <a
               href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 flex items-center gap-2 text-sm text-white/80 hover:text-white"
+              className="mt-2 flex items-center gap-2 text-sm text-header-foreground/80 hover:text-header-foreground"
             >
               <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>
@@ -70,7 +70,7 @@ export function Footer({ settings, user }: FooterProps) {
               href={`https://t.me/${settings.telegramUsername.replace(/^@/, '')}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 flex items-center gap-2 text-sm text-white/80 hover:text-white"
+              className="mt-2 flex items-center gap-2 text-sm text-header-foreground/80 hover:text-header-foreground"
             >
               <Send className="h-4 w-4" /> Telegram @{settings.telegramUsername.replace(/^@/, '')}
             </a>
@@ -78,8 +78,8 @@ export function Footer({ settings, user }: FooterProps) {
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white/60">Links</h4>
-          <div className="flex flex-col gap-2 text-sm text-white/80">
+          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-header-muted">Links</h4>
+          <div className="flex flex-col gap-2 text-sm text-header-foreground/80">
             <Link to="/share-your-trip">{t('shareYourStory')}</Link>
             <Link to="/about">{t('aboutUs')}</Link>
             <Link to="/faq">{t('faq')}</Link>
@@ -94,9 +94,9 @@ export function Footer({ settings, user }: FooterProps) {
         </div>
       </div>
 
-      <div className="border-t border-white/10 px-4 py-4 text-center text-xs text-white/50">
+      <div className="border-t border-header-foreground/10 px-4 py-4 text-center text-xs text-header-muted">
         © {year} {settings?.businessName ?? 'Trip Explorer'}. All rights reserved.
-        <Link to={user?.role === 'admin' ? '/admin' : '/admin/login'} className="ml-3 text-white/70 hover:text-white">
+        <Link to={user?.role === 'admin' ? '/admin' : '/admin/login'} className="ml-3 text-header-foreground/70 hover:text-header-foreground">
           Admin
         </Link>
       </div>

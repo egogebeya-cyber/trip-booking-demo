@@ -10,7 +10,7 @@ export function TrustBadges() {
   ]
 
   return (
-    <div className="flex flex-wrap justify-center gap-6 py-6">
+    <div className="flex flex-col items-center justify-center gap-4 px-4 py-6 sm:flex-row sm:flex-wrap sm:gap-6">
       {badges.map(({ icon: Icon, label }) => (
         <div key={label} className="flex items-center gap-2 text-sm text-muted">
           <Icon className="h-5 w-5 text-primary" />

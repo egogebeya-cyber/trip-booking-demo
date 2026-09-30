@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { createRequire } = require('module')
 
-const src = String.raw`C:\Users\kalid\.cursor\projects\c-Users-kalid-OneDrive-Desktop-OBS-apps-trip-booking\assets\c__Users_kalid_AppData_Roaming_Cursor_User_workspaceStorage_66d2284522e4e8e94ed3174df4755274_images_image-6b1088ad-6dd2-4095-b808-f42c56ac0b4e.png`
+const src = String.raw`C:\Users\kalid\.cursor\projects\c-Users-kalid-OneDrive-Desktop-OBS-apps-trip-booking\assets\c__Users_kalid_AppData_Roaming_Cursor_User_workspaceStorage_66d2284522e4e8e94ed3174df4755274_images_image-0c998f71-3dea-4864-b37a-6199e567799e.png`
 const destDir = String.raw`C:\Users\kalid\OneDrive\Desktop\OBS\apps\bookings\trip booking\public`
 const destPng = path.join(destDir, 'logo.png')
 const destSource = path.join(destDir, 'negus-source.png')

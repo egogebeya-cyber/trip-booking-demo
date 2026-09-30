@@ -1,25 +1,35 @@
-import { Link, createFileRoute, useLoaderData } from '@tanstack/react-router'
-import { Facebook, Instagram, Mail, MapPin, MessageCircle, Phone, Send } from 'lucide-react'
-import { TikTokIcon } from '~/components/icons/TikTokIcon'
+﻿import { Link, createFileRoute } from '@tanstack/react-router'
+import {
+  CalendarDays,
+  Globe2,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Send,
+  Heart,
+  Users,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { NewsletterSignup } from '~/components/contact/NewsletterSignup'
 import { AngledGalleryCarousel } from '~/components/home/AngledGalleryCarousel'
 import { HeroSlideshow } from '~/components/home/HeroSlideshow'
+import { HomePromoVideo } from '~/components/home/HomePromoVideo'
+import { HomeTestimonialCard } from '~/components/home/HomeTestimonialCard'
 import { SectionHeading } from '~/components/home/SectionHeading'
+import { TestimonialsCarousel } from '~/components/home/TestimonialsCarousel'
 import { InlineImage } from '~/components/inline-image'
 import { InlineText } from '~/components/inline-text'
-import { StarRating } from '~/components/star-rating'
 import { useRegisterPageSave, useSiteEdit } from '~/components/site-edit-context'
 import { useLocale } from '~/components/locale-context'
-import { TripCard } from '~/components/trips/TripCard'
 import { PriceTag } from '~/components/price-tag'
-import { BRAND_LOGO_PATH } from '~/lib/brand'
+import { BrandLogoMark } from '~/components/brand/BrandLogoMark'
 import { formatDate } from '~/lib/utils'
 import { tripsSearch } from '~/lib/trips-search'
 import {
   getSiteSettingsFn,
-  getWishlistIdsFn,
-  listBlogPostsFn,
   listTeamMembersFn,
   listTestimonialsFn,
   submitContactFn,
@@ -29,31 +39,223 @@ import { listUpcomingDeparturesFn, listTripsFn } from '~/server/trips/functions'
 
 export const Route = createFileRoute('/_site/')({
   loader: async () => {
-    const [featured, popular, deals, testimonials, blogPosts, settings, upcoming, team, wishlistIds] = await Promise.all([
+    const [featured, popular, deals, testimonials, settings, upcoming, team] = await Promise.all([
       listTripsFn({ data: { featured: true } }),
       listTripsFn({ data: { sort: 'popular' } }),
       listTripsFn({ data: { lastMinute: true } }),
       listTestimonialsFn(),
-      listBlogPostsFn(),
       getSiteSettingsFn(),
       listUpcomingDeparturesFn(),
       listTeamMembersFn(),
-      getWishlistIdsFn(),
     ])
     return {
       featured: featured.slice(0, 3),
       popular: popular.slice(0, 4),
       deals: deals.slice(0, 3),
       testimonials,
-      blogPosts: blogPosts.slice(0, 2),
       settings,
       upcoming,
       team,
-      wishlistIds,
     }
   },
   component: HomePage,
 })
+
+const HOME_SERVICE_ICONS: LucideIcon[] = [CalendarDays, Zap, MessageCircle, Globe2]
+
+const HOME_OFFER_PAIR_CARD_CLASS =
+  'home-offer-card card flex h-full min-h-0 min-w-0 flex-col p-2 md:p-6'
+
+const HOME_OFFER_MOBILE_SCROLL_ROW_CLASS =
+  'flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+
+const HOME_OFFER_MOBILE_CARD_CLASS = `${HOME_OFFER_PAIR_CARD_CLASS} shrink-0 snap-start w-[calc((100%-0.5rem)/2)] min-w-[calc((100%-0.5rem)/2)]`
+
+const HOME_FUTURE_TRIP_CARD_CLASS =
+  'home-future-trip card flex flex-col overflow-hidden p-0 transition hover:shadow-md max-md:rounded-xl md:min-h-0 md:flex-row md:items-stretch md:gap-4 md:p-3'
+
+type HomeFutureTrip = {
+  id: string
+  slug: string
+  title: string
+  coverImageUrl: string
+  nextDate: string
+  price: number
+  priceUsd?: number | null
+  spotsRemaining: number
+}
+
+function HomeFutureTripCard({ trip }: { trip: HomeFutureTrip }) {
+  return (
+    <Link
+      to="/trips/$slug"
+      params={{ slug: trip.slug }}
+      className={HOME_FUTURE_TRIP_CARD_CLASS}
+    >
+      <div className="home-future-trip-media relative aspect-[5/4] w-full shrink-0 overflow-hidden md:aspect-auto md:h-24 md:w-24">
+        <img
+          src={trip.coverImageUrl}
+          alt=""
+          className="h-full w-full object-cover md:rounded-xl md:border md:border-primary/35"
+        />
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-1 p-2.5 md:justify-center md:gap-0.5 md:p-0">
+        <p className="text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-primary md:text-xs md:tracking-wide">
+          {formatDate(trip.nextDate)}
+        </p>
+        <h3 className="line-clamp-2 text-xs font-semibold leading-snug md:mt-1 md:line-clamp-none md:truncate md:text-base">
+          {trip.title}
+        </h3>
+        <div className="mt-auto flex min-w-0 flex-col gap-0.5 pt-1 md:mt-0 md:flex-row md:flex-wrap md:items-baseline md:gap-x-1.5 md:gap-y-0 md:pt-0">
+          <PriceTag
+            etb={trip.price}
+            usd={trip.priceUsd}
+            size="sm"
+            className="inline-flex flex-wrap items-baseline text-[0.6875rem] md:text-sm"
+          />
+          <span className="hidden text-muted/70 md:inline" aria-hidden>
+            {'\u00B7'}
+          </span>
+          <span className="text-[0.625rem] leading-tight text-muted/85 md:text-xs md:text-muted md:whitespace-nowrap">
+            {trip.spotsRemaining} spots left
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function HomeOfferCardBody({
+  icon: Icon,
+  kicker,
+  title,
+  desc,
+  cta,
+  compactMobile,
+  compactNarrow,
+}: {
+  icon: LucideIcon
+  kicker: React.ReactNode
+  title: React.ReactNode
+  desc: React.ReactNode
+  cta: string
+  compactMobile?: boolean
+  compactNarrow?: boolean
+}) {
+  const narrow = Boolean(compactMobile && compactNarrow)
+  return (
+    <>
+      <div
+        className={`flex flex-1 flex-col ${compactMobile ? (narrow ? 'gap-1.5 md:gap-3' : 'gap-2 md:gap-3') : 'gap-3'} md:block`}
+      >
+        <div
+          className={
+            narrow
+              ? 'flex flex-col items-center gap-1.5 text-center md:block md:text-left'
+              : 'flex items-start gap-2 md:gap-3 md:block'
+          }
+        >
+          <div
+            className={`home-offer-card-icon flex shrink-0 items-center justify-center rounded-xl border border-primary/50 bg-primary/10 text-primary md:hidden ${
+              narrow ? 'h-8 w-8' : compactMobile ? 'h-9 w-9' : 'h-11 w-11'
+            }`}
+            aria-hidden
+          >
+            <Icon
+              className={narrow ? 'h-3.5 w-3.5' : compactMobile ? 'h-4 w-4' : 'h-5 w-5'}
+              strokeWidth={1.75}
+            />
+          </div>
+          <div className={narrow ? 'min-w-0 w-full md:flex-1' : 'min-w-0 flex-1'}>
+            <p
+              className={`font-semibold uppercase text-primary ${
+                narrow
+                  ? 'text-[0.5625rem] tracking-[0.12em] md:text-sm md:tracking-widest'
+                  : compactMobile
+                    ? 'text-[0.625rem] tracking-[0.15em] md:text-sm md:tracking-widest'
+                    : 'text-xs tracking-[0.2em] md:text-sm md:tracking-widest'
+              }`}
+            >
+              {kicker}
+            </p>
+            <h3
+              className={`md:mt-2 md:text-xl ${
+                narrow
+                  ? 'mt-0.5 line-clamp-2 text-[0.6875rem] font-semibold leading-tight md:line-clamp-none md:text-xl md:font-normal'
+                  : compactMobile
+                    ? 'mt-0.5 line-clamp-2 text-sm font-semibold leading-snug md:line-clamp-none md:text-xl md:font-normal'
+                    : 'mt-1 text-lg'
+              }`}
+            >
+              {title}
+            </h3>
+          </div>
+        </div>
+        <p
+          className={`text-muted md:mt-2 ${
+            narrow
+              ? 'line-clamp-2 text-[0.625rem] leading-tight md:line-clamp-none md:text-sm md:leading-relaxed'
+              : compactMobile
+                ? 'line-clamp-2 text-xs leading-snug md:line-clamp-none md:text-sm md:leading-relaxed'
+                : 'text-sm leading-relaxed'
+          }`}
+        >
+          {desc}
+        </p>
+      </div>
+      <span
+        className={`home-offer-cta mt-auto md:pt-0 ${
+          narrow
+            ? 'home-offer-cta--compact home-offer-cta--narrow pt-1.5 md:mt-4 md:text-sm'
+            : compactMobile
+              ? 'home-offer-cta--compact pt-2 text-xs md:mt-4 md:text-sm'
+              : 'pt-3 md:mt-4'
+        }`}
+      >
+        {cta}
+      </span>
+    </>
+  )
+}
+
+type HomeOfferLink =
+  | { to: '/trips'; search?: ReturnType<typeof tripsSearch> }
+  | { to: '/contact' }
+
+function homeServiceOfferLink(i: number): HomeOfferLink {
+  if (i === 0) return { to: '/trips', search: tripsSearch({ days: '1' }) }
+  if (i === 1) return { to: '/trips', search: tripsSearch({ days: '2' }) }
+  if (i === 2) return { to: '/contact' }
+  return { to: '/trips', search: tripsSearch({ category: 'international' }) }
+}
+
+function HomeOfferShell({
+  className,
+  isAdmin,
+  link,
+  children,
+}: {
+  className: string
+  isAdmin: boolean
+  link?: HomeOfferLink
+  children: React.ReactNode
+}) {
+  if (isAdmin) {
+    return <div className={className}>{children}</div>
+  }
+  if (link?.to === '/contact') {
+    return (
+      <Link to="/contact" className={className}>
+        {children}
+      </Link>
+    )
+  }
+  return (
+    <Link to="/trips" search={link?.search ?? tripsSearch()} className={className}>
+      {children}
+    </Link>
+  )
+}
 
 function HomeContactForm() {
   const { t } = useLocale()
@@ -111,9 +313,8 @@ function HomeContactForm() {
 }
 
 function HomePage() {
-  const { featured, popular, deals, testimonials, blogPosts, settings, upcoming, team, wishlistIds } = Route.useLoaderData()
-  const { user } = useLoaderData({ from: '/_site' })
-  const { t, locale } = useLocale()
+  const { featured, popular, deals, testimonials, settings, upcoming, team } = Route.useLoaderData()
+  const { t } = useLocale()
   const { home, settings: draft, isAdmin, setHome, setFeature, setService, setSetting } = useSiteEdit()
   const [members, setMembers] = useState(team)
   const [teamDirty, setTeamDirty] = useState(false)
@@ -169,6 +370,67 @@ function HomePage() {
 
   const gallery = (home.galleryImages.length ? home.galleryImages : tripGallery).filter(Boolean)
 
+  const renderServiceOffer = (i: number, cardClass: string) => {
+    const item = home.services[i]
+    if (!item) return null
+    const Icon = HOME_SERVICE_ICONS[i] ?? Globe2
+    return (
+      <HomeOfferShell
+        key={`service-${i}`}
+        className={cardClass}
+        isAdmin={isAdmin}
+        link={homeServiceOfferLink(i)}
+      >
+        <HomeOfferCardBody
+          compactMobile
+          icon={Icon}
+          kicker={<InlineText value={item.kicker} onChange={(v) => setService(i, { kicker: v })} />}
+          title={<InlineText value={item.title} onChange={(v) => setService(i, { title: v })} />}
+          desc={<InlineText value={item.desc} onChange={(v) => setService(i, { desc: v })} multiline />}
+          cta={'Learn more \u2192'}
+        />
+      </HomeOfferShell>
+    )
+  }
+
+  const renderPrivateOffer = (cardClass: string) => (
+    <HomeOfferShell
+      key="private"
+      className={cardClass}
+      isAdmin={isAdmin}
+      link={{ to: '/trips' }}
+    >
+      <HomeOfferCardBody
+        compactMobile
+        icon={Users}
+        kicker="Private"
+        title="Full package"
+        desc={'About 15 people together. The date is yours \u2014 other travelers cannot join.'}
+        cta={'Book a trip \u2192'}
+      />
+    </HomeOfferShell>
+  )
+
+  const renderFamilyOffer = (cardClass: string) => (
+    <HomeOfferShell
+      key="family"
+      className={cardClass}
+      isAdmin={isAdmin}
+      link={{ to: '/trips' }}
+    >
+      <HomeOfferCardBody
+        compactMobile
+        icon={Heart}
+        kicker="Family"
+        title="Family trip"
+        desc="Travel with your family only. We close the date so strangers do not join."
+        cta={'Book a trip \u2192'}
+      />
+    </HomeOfferShell>
+  )
+
+  const offerCardIndices = [0, 1, 2, 3] as const
+
   return (
     <div>
       <HeroSlideshow
@@ -184,13 +446,7 @@ function HomePage() {
             : undefined
         }
       >
-        <img
-          src={BRAND_LOGO_PATH}
-          alt="Negus Events"
-          className="mx-auto mb-5 h-28 w-28 rounded-full bg-black object-cover shadow-[0_0_40px_rgb(212_175_55/0.45)] ring-2 ring-primary/70 sm:h-36 sm:w-36"
-          width={144}
-          height={144}
-        />
+        <BrandLogoMark size="hero" alt="Negus Events" className="mx-auto mb-4 sm:mb-5" />
         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-primary">
           <InlineText value={home.heroKicker} onChange={(v) => setHome({ heroKicker: v })} className="text-center uppercase tracking-[0.3em] text-primary" />
         </p>
@@ -230,138 +486,56 @@ function HomePage() {
         </div>
       </section>
 
-      <section id="offers" className="bg-accent px-4 py-12 md:py-24">
+      <HomePromoVideo
+        videoUrl={home.homeVideoUrl || settings?.heroVideoUrl || ''}
+        posterUrl={home.homeVideoPosterUrl || null}
+        title={<InlineText value={home.homeVideoTitle} onChange={(v) => setHome({ homeVideoTitle: v })} />}
+        desc={<InlineText value={home.homeVideoDesc} onChange={(v) => setHome({ homeVideoDesc: v })} multiline />}
+        isAdmin={isAdmin}
+        onVideoUrlChange={isAdmin ? (url) => setHome({ homeVideoUrl: url }) : undefined}
+      />
+
+      <section
+        id="offers"
+        className="bg-accent px-4 py-8 md:py-24 max-md:section-band-mobile max-md:border-y max-md:border-primary/15 max-md:[&_.section-heading]:mb-6 max-md:[&_.section-heading]:text-[1.35rem] max-md:[&_.section-heading]:after:bottom-[-10px] max-md:[&_.section-kicker]:mb-2 max-md:[&_.section-kicker]:text-xs max-md:[&_.section-kicker]:tracking-[0.2em] max-md:[&_.text-muted]:text-sm max-md:[&_.text-muted]:leading-6 max-md:[&_div.text-center]:mb-8"
+      >
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             kicker={<InlineText value={home.servicesKicker} onChange={(v) => setHome({ servicesKicker: v })} />}
             title={<InlineText value={home.servicesTitle} onChange={(v) => setHome({ servicesTitle: v })} />}
             desc={<InlineText value={home.servicesDesc} onChange={(v) => setHome({ servicesDesc: v })} multiline />}
+            descClassName="line-clamp-2 md:line-clamp-none"
           />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {home.services.map((item, i) => {
-              const inner = (
-                <>
-                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-                    <InlineText value={item.kicker} onChange={(v) => setService(i, { kicker: v })} />
-                  </p>
-                  <h3 className="mt-2 text-xl">
-                    <InlineText value={item.title} onChange={(v) => setService(i, { title: v })} />
-                  </h3>
-                  <p className="mt-2 text-sm text-muted">
-                    <InlineText value={item.desc} onChange={(v) => setService(i, { desc: v })} multiline />
-                  </p>
-                  <span className="mt-4 inline-block text-sm font-semibold uppercase tracking-wide text-primary">Learn more →</span>
-                </>
-              )
-              if (isAdmin) return <div key={i} className="card block p-6">{inner}</div>
-              if (i === 0) return <Link key={i} to="/trips" search={tripsSearch({ days: '1' })} className="card block p-6">{inner}</Link>
-              if (i === 1) return <Link key={i} to="/trips" search={tripsSearch({ days: '2' })} className="card block p-6">{inner}</Link>
-              if (i === 2) return <Link key={i} to="/contact" className="card block p-6">{inner}</Link>
-              return <Link key={i} to="/trips" search={tripsSearch({ category: 'international' })} className="card block p-6">{inner}</Link>
-            })}
-          </div>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <Link to="/trips" className="card block p-6">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">Private</p>
-              <h3 className="mt-2 text-xl">Full package</h3>
-              <p className="mt-2 text-sm text-muted">
-                About 15 people together. The date is yours — other travelers cannot join.
-              </p>
-              <span className="mt-4 inline-block text-sm font-semibold uppercase tracking-wide text-primary">Book a trip →</span>
-            </Link>
-            <Link to="/trips" className="card block p-6">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">Family</p>
-              <h3 className="mt-2 text-xl">Family trip</h3>
-              <p className="mt-2 text-sm text-muted">
-                Travel with your family only. We close the date so strangers do not join.
-              </p>
-              <span className="mt-4 inline-block text-sm font-semibold uppercase tracking-wide text-primary">Book a trip →</span>
-            </Link>
+          <div className="max-md:space-y-2">
+            <div className={`${HOME_OFFER_MOBILE_SCROLL_ROW_CLASS} md:hidden`}>
+              {offerCardIndices.slice(0, 3).map((i) => renderServiceOffer(i, HOME_OFFER_MOBILE_CARD_CLASS))}
+            </div>
+            <div className={`${HOME_OFFER_MOBILE_SCROLL_ROW_CLASS} md:hidden`}>
+              {renderServiceOffer(3, HOME_OFFER_MOBILE_CARD_CLASS)}
+              {renderPrivateOffer(HOME_OFFER_MOBILE_CARD_CLASS)}
+              {renderFamilyOffer(HOME_OFFER_MOBILE_CARD_CLASS)}
+            </div>
+            <div className="hidden md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-4">
+              {offerCardIndices.map((i) => renderServiceOffer(i, HOME_OFFER_PAIR_CARD_CLASS))}
+              {renderPrivateOffer(HOME_OFFER_PAIR_CARD_CLASS)}
+              {renderFamilyOffer(HOME_OFFER_PAIR_CARD_CLASS)}
+            </div>
           </div>
         </div>
       </section>
 
-      {(upcoming.length > 0 || popular.length > 0) && (
-        <section id="future" className="mx-auto max-w-7xl px-4 py-12 md:py-24">
-          {upcoming.length > 0 && (
-            <>
-              <SectionHeading
-                kicker={<InlineText value={home.futureKicker} onChange={(v) => setHome({ futureKicker: v })} />}
-                title={<InlineText value={home.futureTitle} onChange={(v) => setHome({ futureTitle: v })} />}
-              />
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {upcoming.map((trip) => (
-                  <Link
-                    key={`${trip.id}-${trip.nextDate}`}
-                    to="/trips/$slug"
-                    params={{ slug: trip.slug }}
-                    className="card flex gap-4 overflow-hidden p-3 transition hover:shadow-md"
-                  >
-                    <img src={trip.coverImageUrl} alt="" className="h-24 w-24 rounded-xl object-cover" />
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-primary">{formatDate(trip.nextDate)}</p>
-                      <h3 className="mt-1 truncate font-semibold">{trip.title}</h3>
-                      <p className="text-sm text-muted">
-                        <PriceTag etb={trip.price} usd={trip.priceUsd} size="sm" /> · {trip.spotsRemaining} spots left
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
-
-          {popular.length > 0 && (
-            <div className={upcoming.length > 0 ? 'mt-16' : undefined}>
-              <SectionHeading
-                kicker={<InlineText value={home.popularKicker} onChange={(v) => setHome({ popularKicker: v })} />}
-                title={t('popularTrips')}
-              />
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {popular.map((trip) => (
-                  <TripCard
-                    key={trip.id}
-                    trip={trip}
-                    locale={locale}
-                    loggedIn={Boolean(user)}
-                    isWishlisted={wishlistIds.includes(trip.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-      )}
-
-      {members.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-12 md:py-24">
+      {upcoming.length > 0 && (
+        <section
+          id="future"
+          className="mx-auto max-w-7xl px-4 py-8 md:py-24 max-md:section-band-mobile max-md:border-y max-md:border-primary/15 max-md:[&>div:first-child]:mb-6 max-md:[&_.section-heading]:mb-8 max-md:[&_.section-heading]:text-[1.35rem] max-md:[&_.section-heading]:after:bottom-[-10px] max-md:[&_.section-kicker]:mb-2 max-md:[&_.section-kicker]:text-xs max-md:[&_.section-kicker]:tracking-[0.2em]"
+        >
           <SectionHeading
-            kicker={<InlineText value={home.teamKicker} onChange={(v) => setHome({ teamKicker: v })} />}
-            title={<InlineText value={home.teamTitle} onChange={(v) => setHome({ teamTitle: v })} />}
+            kicker={<InlineText value={home.futureKicker} onChange={(v) => setHome({ futureKicker: v })} />}
+            title={<InlineText value={home.futureTitle} onChange={(v) => setHome({ futureTitle: v })} />}
           />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {members.map((member) => (
-              <div key={member.id} className="card p-6 text-center">
-                {isAdmin || member.photoUrl ? (
-                  <InlineImage
-                    src={member.photoUrl}
-                    alt={member.name}
-                    className="mx-auto w-24"
-                    imgClassName="mx-auto h-24 w-24 rounded-full object-cover"
-                    onChange={(url) => {
-                      setMembers((prev) => prev.map((m) => (m.id === member.id ? { ...m, photoUrl: url } : m)))
-                      setTeamDirty(true)
-                    }}
-                  />
-                ) : (
-                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-accent text-xl font-semibold text-primary">
-                    {member.name.slice(0, 1)}
-                  </div>
-                )}
-                <h3 className="mt-4 font-semibold">{member.name}</h3>
-                <p className="text-sm text-primary">{member.role}</p>
-                {member.bio && <p className="mt-2 text-sm text-muted">{member.bio}</p>}
-              </div>
+          <div className="home-future-grid grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+            {upcoming.map((trip) => (
+              <HomeFutureTripCard key={`${trip.id}-${trip.nextDate}`} trip={trip} />
             ))}
           </div>
         </section>
@@ -392,26 +566,43 @@ function HomePage() {
         </section>
       )}
 
-      {blogPosts.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-12 md:py-24">
+      {members.length > 0 && (
+        <section
+          id="team"
+          className="mx-auto max-w-7xl px-4 py-8 md:py-24 max-md:[&>div:first-child]:mb-6 max-md:[&_.section-heading]:mb-8 max-md:[&_.section-heading]:text-[1.35rem] max-md:[&_.section-heading]:after:bottom-[-10px] max-md:[&_.section-kicker]:mb-2 max-md:[&_.section-kicker]:text-xs max-md:[&_.section-kicker]:tracking-[0.2em]"
+        >
           <SectionHeading
-            kicker={<InlineText value={home.blogKicker} onChange={(v) => setHome({ blogKicker: v })} />}
-            title={t('travelTips')}
+            kicker={<InlineText value={home.teamKicker} onChange={(v) => setHome({ teamKicker: v })} />}
+            title={<InlineText value={home.teamTitle} onChange={(v) => setHome({ teamTitle: v })} />}
           />
-          <div className="-mt-6 mb-8 text-center">
-            <Link to="/blog" className="text-sm font-semibold uppercase tracking-wide text-primary">View all →</Link>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            {blogPosts.map((post) => (
-              <Link key={post.id} to="/blog/$slug" params={{ slug: post.slug }} className="card overflow-hidden hover:shadow-md">
-                {post.coverImageUrl && (
-                  <img src={post.coverImageUrl} alt={post.title} className="aspect-video w-full object-cover" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+            {members.map((member) => (
+              <div
+                key={member.id}
+                className="home-team-card card w-full p-4 text-center md:p-6"
+              >
+                {isAdmin || member.photoUrl ? (
+                  <InlineImage
+                    src={member.photoUrl}
+                    alt={member.name}
+                    className="mx-auto w-16 md:w-24"
+                    imgClassName="mx-auto h-16 w-16 rounded-full object-cover ring-2 ring-primary/30 md:h-24 md:w-24"
+                    onChange={(url) => {
+                      setMembers((prev) => prev.map((m) => (m.id === member.id ? { ...m, photoUrl: url } : m)))
+                      setTeamDirty(true)
+                    }}
+                  />
+                ) : (
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent text-lg font-semibold text-primary ring-2 ring-primary/30 md:h-24 md:w-24 md:text-xl">
+                    {member.name.slice(0, 1)}
+                  </div>
                 )}
-                <div className="p-4">
-                  <h3 className="font-semibold">{post.title}</h3>
-                  <p className="mt-1 text-sm text-muted">{post.excerpt}</p>
-                </div>
-              </Link>
+                <h3 className="mt-3 text-base font-semibold md:mt-4 md:text-lg">{member.name}</h3>
+                <p className="text-sm font-medium text-primary">{member.role}</p>
+                {member.bio && (
+                  <p className="mt-2 text-base leading-relaxed text-muted md:text-sm md:leading-normal">{member.bio}</p>
+                )}
+              </div>
             ))}
           </div>
         </section>
@@ -439,49 +630,29 @@ function HomePage() {
             title={t('testimonials')}
           />
           {reviews.length > 0 && (
-          <div className="grid gap-6 md:grid-cols-3">
-            {reviews.map((item) => (
-              <blockquote key={item.id} className="card p-6">
-                {(item.photoUrl || isAdmin) && (
-                  <InlineImage
-                    src={item.photoUrl}
-                    alt={item.customerName}
-                    className="mb-4 w-16"
-                    imgClassName="h-16 w-16 rounded-full object-cover"
-                    onChange={(url) => updateReview(item.id, { photoUrl: url })}
+            <>
+              <TestimonialsCarousel slideCount={reviews.length} className="-mx-4 px-4 md:hidden">
+                {reviews.map((item) => (
+                  <div key={item.id} className="w-[88%] shrink-0">
+                    <HomeTestimonialCard item={item} isAdmin={isAdmin} onUpdate={updateReview} />
+                  </div>
+                ))}
+              </TestimonialsCarousel>
+              <div className="hidden gap-6 md:grid md:grid-cols-3">
+                {reviews.map((item) => (
+                  <HomeTestimonialCard
+                    key={item.id}
+                    item={item}
+                    isAdmin={isAdmin}
+                    onUpdate={updateReview}
                   />
-                )}
-                <StarRating value={item.rating} onChange={(rating) => updateReview(item.id, { rating })} />
-                <p className="mt-3 text-muted">
-                  "
-                  <InlineText
-                    value={item.quote}
-                    onChange={(v) => updateReview(item.id, { quote: v })}
-                    multiline
-                  />
-                  "
-                </p>
-                <footer className="mt-4 font-medium">
-                  <InlineText
-                    value={item.customerName}
-                    onChange={(v) => updateReview(item.id, { customerName: v })}
-                  />
-                  {(item.tripName || isAdmin) && (
-                    <span className="block text-sm text-muted">
-                      <InlineText
-                        value={item.tripName ?? ''}
-                        onChange={(v) => updateReview(item.id, { tripName: v })}
-                      />
-                    </span>
-                  )}
-                </footer>
-              </blockquote>
-            ))}
-          </div>
+                ))}
+              </div>
+            </>
           )}
           <p className="mt-8">
             <Link to="/share-your-trip" className="btn-primary px-10 py-4 text-lg">
-              {t('shareYourStory')} →
+              {t('shareYourStory')} {'\u2192'}
             </Link>
           </p>
           {isAdmin && (
@@ -543,26 +714,15 @@ function HomePage() {
                   <Send className="mr-1 h-4 w-4" /> Telegram
                 </a>
               )}
-              {settings?.facebookUrl && (
-                <a href={settings.facebookUrl} target="_blank" rel="noreferrer" className="btn-outline text-sm">
-                  <Facebook className="mr-1 h-4 w-4" /> Facebook
-                </a>
-              )}
-              {settings?.instagramUrl && (
-                <a href={settings.instagramUrl} target="_blank" rel="noreferrer" className="btn-outline text-sm">
-                  <Instagram className="mr-1 h-4 w-4" /> Instagram
-                </a>
-              )}
-              {settings?.tiktokUrl && (
-                <a href={settings.tiktokUrl} target="_blank" rel="noreferrer" className="btn-outline text-sm">
-                  <TikTokIcon className="mr-1 h-4 w-4" /> TikTok
-                </a>
-              )}
             </div>
             <div className="mt-6 rounded-2xl border border-border bg-card p-4 text-sm">
               <p className="font-semibold">Payment methods</p>
-              <p className="mt-2 text-muted">Telebirr{settings?.telebirrNumber ? ` — ${settings.telebirrNumber}` : ''}</p>
-              <p className="text-muted">Bank transfer{settings?.bankName ? ` — ${settings.bankName}` : ''}</p>
+              <p className="mt-2 text-muted">
+                Telebirr{settings?.telebirrNumber ? ` \u2014 ${settings.telebirrNumber}` : ''}
+              </p>
+              <p className="text-muted">
+                Bank transfer{settings?.bankName ? ` \u2014 ${settings.bankName}` : ''}
+              </p>
               <p className="text-muted">Pay on arrival</p>
             </div>
           </div>

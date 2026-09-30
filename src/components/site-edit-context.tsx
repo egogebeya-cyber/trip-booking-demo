@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { parseHomepageContent, type HomepageContent } from '~/lib/homepage-content'
 import type { PublicUser } from '~/lib/auth-types'
+import { publicInlineEditEnabled } from '~/lib/public-inline-edit'
 import { updateSiteSettingsFn } from '~/server/admin/functions'
 
 type SettingsDraft = {
@@ -46,7 +47,7 @@ export function SiteEditProvider({
   } | null
   children: ReactNode
 }) {
-  const isAdmin = user?.role === 'admin'
+  const isAdmin = publicInlineEditEnabled(user?.role === 'admin')
   const [home, setHomeState] = useState(() => parseHomepageContent(settings?.homepageJson))
   const [draft, setDraft] = useState<SettingsDraft>({
     heroTitle: settings?.heroTitle ?? '',
