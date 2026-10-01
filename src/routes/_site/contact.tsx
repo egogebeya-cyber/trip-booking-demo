@@ -66,7 +66,7 @@ function ContactPage() {
         </button>
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div data-reveal="" className="mt-6 space-y-4">
           <div className="grid gap-4 rounded-2xl border border-border bg-card p-6 sm:grid-cols-3">
             <div>
               <p className="text-sm text-muted">Email</p>
@@ -122,7 +122,7 @@ function ContactPage() {
           </div>
         </div>
 
-      <form onSubmit={submit} className="mt-8 space-y-4">
+      <form data-reveal="" onSubmit={submit} className="mt-8 space-y-4">
         <div>
           <label className="label">{t('fullName')}</label>
           <input

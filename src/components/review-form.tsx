@@ -25,6 +25,7 @@ export function ReviewForm({ tripId, loggedIn }: { tripId: string; loggedIn: boo
 
   return (
     <form
+      data-reveal=""
       className="card mt-4 space-y-3 p-4"
       onSubmit={async (e) => {
         e.preventDefault()

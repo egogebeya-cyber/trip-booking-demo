@@ -15,7 +15,7 @@ export function SectionHeading({
   align?: 'center' | 'left'
 }) {
   return (
-    <div className={align === 'center' ? 'mb-12 text-center' : 'mb-10'}>
+    <div data-reveal="" className={align === 'center' ? 'mb-12 text-center' : 'mb-10'}>
       <p className="section-kicker">{kicker}</p>
       <div>
         <h2 className="section-heading">{title}</h2>

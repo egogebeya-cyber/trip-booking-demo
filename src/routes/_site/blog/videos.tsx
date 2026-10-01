@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { BackButton } from '~/components/back-button'
+import { JourneyFilm } from '~/components/blog/story'
 import { useLocale } from '~/components/locale-context'
-import { getYouTubeEmbedUrl } from '~/lib/utils'
 import { listBlogPostsFn } from '~/server/content/functions'
 
 export const Route = createFileRoute('/_site/blog/videos')({
@@ -19,26 +19,32 @@ function BlogVideosPage() {
   const { t } = useLocale()
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      <BackButton fallbackTo="/blog" label={t('blog')} className="mb-4" />
-      <h1 className="font-display text-3xl font-bold">{t('video')}</h1>
-      <div className="mt-8 space-y-8">
+    <div className="mx-auto min-w-0 max-w-3xl overflow-x-clip px-4 pb-24 pt-6 sm:pb-16 sm:pt-10">
+      <BackButton fallbackTo="/blog" label={t('blog')} />
+      <header data-reveal="" className="mt-6 min-w-0 max-w-2xl">
+        <p className="section-kicker">{t('blogKicker')}</p>
+        <h1 className="font-display text-3xl leading-tight sm:text-5xl">{t('fromTheJourney')}</h1>
+      </header>
+      <div className="mt-8 min-w-0 space-y-10">
         {videos.map((post) => (
-          <article key={post.id} className="card p-4">
-            <div className="overflow-hidden rounded-xl border border-border">
-              <iframe
-                src={getYouTubeEmbedUrl(post.videoUrl!)}
-                title={`${post.title} video`}
-                className="aspect-video w-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-            <p className="mt-3 font-semibold">{post.title}</p>
+          <article key={post.id} className="min-w-0">
+            <JourneyFilm
+              url={post.videoUrl!}
+              title={post.title}
+              kicker={t('fromTheJourney')}
+              playLabel={t('playFilm')}
+            />
+            <Link
+              to="/blog/$slug"
+              params={{ slug: post.slug }}
+              className="mt-3 inline-flex max-w-full break-words text-xs font-semibold uppercase tracking-[0.16em] text-primary"
+            >
+              {t('readStory')}
+            </Link>
           </article>
         ))}
       </div>
-      {videos.length === 0 && <p className="mt-8 text-muted">No videos yet.</p>}
+      {videos.length === 0 && <p className="mt-8 text-muted">{t('noVideos')}</p>}
     </div>
   )
 }

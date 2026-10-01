@@ -37,7 +37,7 @@ export const Route = createFileRoute('/_site/trips/')({
 })
 
 function durationPillClass(active: boolean, activeClass: string) {
-  return `inline-flex min-h-11 items-center rounded-full px-4 py-2 text-sm font-medium ${active ? activeClass : 'bg-accent text-foreground'}`
+  return `inline-flex min-h-11 max-w-full shrink-0 items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ${active ? activeClass : 'bg-accent text-foreground'}`
 }
 
 function TripsPage() {
@@ -60,7 +60,7 @@ function TripsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
+    <div className="mx-auto w-full min-w-0 max-w-7xl px-4 py-6 md:py-8">
       <BackButton fallbackTo="/" className="mb-6" />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -80,7 +80,7 @@ function TripsPage() {
         <strong>International</strong> packages to Dubai, Kenya, and Tanzania.
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="trip-filter-pills mt-4 flex w-full min-w-0 max-w-full flex-wrap gap-2">
         <Link
           to="/trips"
           search={tripsSearch({ ...search, days: '', category: '', sort: 'newest' })}
@@ -139,7 +139,7 @@ function TripsPage() {
       {trips.length === 0 ? (
         <p className="mt-12 text-center text-muted">{t('noTripsFound')}</p>
       ) : (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div data-reveal-stagger="" className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {trips.map((trip) => (
             <TripCard
               key={trip.id}

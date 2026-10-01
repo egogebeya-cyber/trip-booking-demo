@@ -96,7 +96,7 @@ export function HomePromoVideo({
     posterUrl?.trim() || (embedUrl ? getYouTubeThumbnail(activeSrc) : undefined)
 
   return (
-    <section className={cn('mx-auto max-w-7xl px-4 py-12 md:py-24', className)}>
+    <section data-reveal="" className={cn('mx-auto max-w-7xl px-4 py-12 md:py-24', className)}>
       <div className="mb-10 text-center">
         <h2 className="section-heading">{title}</h2>
         {desc ? (

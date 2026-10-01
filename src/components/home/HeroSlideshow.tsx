@@ -95,9 +95,9 @@ export function HeroSlideshow({
         />
       ))}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-background/90" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgb(212_175_55/0.2),transparent_48%)]" />
+      <div className="hero-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgb(212_175_55/0.2),transparent_48%)]" />
 
-      <div className="relative z-10 mx-auto max-w-5xl text-center">{children}</div>
+      <div className="hero-copy relative z-10 mx-auto max-w-5xl text-center">{children}</div>
 
       {onReplaceSlide && (
         <label className="absolute right-4 top-4 z-20 cursor-pointer rounded-full bg-primary px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow">

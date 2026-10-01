@@ -255,9 +255,15 @@ html.light {
   .site-main-trip-detail {
     padding-bottom: 4.5rem;
   }
+  .trip-has-book-bar {
+    --mobile-book-bar-height: 5rem;
+  }
   @media (min-width: 768px) {
     .site-main-trip-detail {
       padding-bottom: 0;
+    }
+    .trip-has-book-bar {
+      --mobile-book-bar-height: 0px;
     }
   }
 
@@ -409,4 +415,127 @@ html.light {
     text-transform: uppercase;
     color: var(--color-primary);
   }
+}
+
+/* Public-site motion. Opacity and translate only — hover lifts stay on transform. */
+@keyframes site-page-enter {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes hero-copy-in {
+  from { translate: 0 10px; }
+  to { translate: 0 0; }
+}
+
+@keyframes hero-ambient {
+  from { opacity: 0.42; }
+  to { opacity: 1; }
+}
+
+@keyframes site-reveal {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes site-reveal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-page {
+    animation: site-page-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .hero-copy > * {
+    animation: hero-copy-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  .hero-copy > *:nth-child(1) { animation-delay: 0.04s; }
+  .hero-copy > *:nth-child(2) { animation-delay: 0.1s; }
+  .hero-copy > *:nth-child(3) { animation-delay: 0.16s; }
+  .hero-copy > *:nth-child(4) { animation-delay: 0.24s; }
+
+  .hero-ambient {
+    animation: hero-ambient 10s ease-in-out infinite alternate;
+  }
+
+  [data-reveal='wait'] {
+    opacity: 0;
+    translate: 0 14px;
+  }
+
+  [data-reveal='wait']:focus-within {
+    opacity: 1;
+    translate: none;
+  }
+
+  [data-reveal='in'] {
+    animation: site-reveal 0.68s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: calc(min(var(--reveal-i, 0), 6) * 55ms);
+  }
+
+  [data-reveal-stagger].overflow-x-auto > [data-reveal='wait'],
+  [data-reveal='wait'][data-reveal-motion='fade'] {
+    translate: none;
+  }
+
+  [data-reveal-stagger].overflow-x-auto > [data-reveal='in'],
+  [data-reveal='in'][data-reveal-motion='fade'] {
+    animation-name: site-reveal-fade;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (max-width: 767px) {
+  .hero-ambient {
+    animation-duration: 14s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-page,
+  .hero-copy > *,
+  .hero-ambient,
+  [data-reveal='in'] {
+    animation: none !important;
+  }
+
+  [data-reveal='wait'],
+  [data-reveal='in'],
+  [data-reveal='shown'] {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+}
+
+/* Keep filter chips inside the clipped main column, with the full label visible. */
+.site-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.trip-filter-pills {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.trip-filter-pills > a {
+  flex: 0 0 auto;
+  max-width: 100%;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
 }

@@ -50,7 +50,7 @@ function AboutPage() {
     <div className="mx-auto max-w-5xl px-4 py-12">
       <BackButton fallbackTo="/" className="mb-6" />
       <h1 className="font-display text-3xl font-bold">{t('aboutUs')}</h1>
-      <div className="mt-6 text-lg leading-relaxed text-muted">
+      <div data-reveal="" className="mt-6 text-lg leading-relaxed text-muted">
         <InlineText
           value={settings.aboutText}
           onChange={(v) => setSetting('aboutText', v)}
@@ -61,9 +61,9 @@ function AboutPage() {
       {members.length > 0 && (
         <section className="mt-12">
           <h2 className="font-display text-2xl font-semibold">{t('ourTeam')}</h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-reveal-stagger="" className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {members.map((member) => (
-              <div key={member.id} className="card p-6 text-center">
+              <div key={member.id} data-reveal="" className="card p-6 text-center">
                 <InlineImage
                   src={member.photoUrl}
                   alt={member.name}

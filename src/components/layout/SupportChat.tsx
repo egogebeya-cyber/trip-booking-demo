@@ -85,7 +85,7 @@ export function SupportChat({
   }
 
   return (
-    <div className="fixed bottom-[calc(var(--mobile-nav-height,4.25rem)+0.75rem)] right-4 z-[60] flex flex-col items-end gap-3 md:bottom-6 md:right-6">
+    <div className="fixed bottom-[calc(var(--mobile-nav-height,4.25rem)+var(--mobile-book-bar-height,0px)+0.75rem)] right-4 z-[60] flex flex-col items-end gap-3 md:bottom-6 md:right-6">
       {open && (
         <div className="flex h-[min(32rem,70dvh)] w-[min(100vw-2rem,22rem)] flex-col overflow-hidden rounded-2xl border-2 border-primary bg-background shadow-2xl">
           <div className="bg-primary px-4 py-3 text-primary-foreground">

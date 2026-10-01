@@ -140,7 +140,7 @@ export function TestimonialsCarousel({
   const stepExpr = 'calc(88% + 1rem)'
 
   return (
-    <div className={cn('relative', className)}>
+    <div data-reveal="" className={cn('relative', className)}>
       <div
         className="overflow-hidden"
         role="region"

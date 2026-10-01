@@ -47,9 +47,9 @@ function FaqPage() {
     <div className="mx-auto max-w-3xl px-4 py-12">
       <BackButton fallbackTo="/" className="mb-6" />
       <h1 className="font-display text-3xl font-bold">{t('faq')}</h1>
-      <div className="mt-8 space-y-4">
+      <div data-reveal-stagger="" className="mt-8 space-y-4">
         {faqs.map((faq) => (
-          <details key={faq.id} className="card p-4" open={edit?.isAdmin}>
+          <details key={faq.id} data-reveal="" className="card p-4" open={edit?.isAdmin}>
             <summary className="cursor-pointer font-medium">
               <InlineText value={faq.question} onChange={(v) => update(faq.id, { question: v })} />
             </summary>

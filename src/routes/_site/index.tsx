@@ -66,11 +66,6 @@ const HOME_SERVICE_ICONS: LucideIcon[] = [CalendarDays, Zap, MessageCircle, Glob
 const HOME_OFFER_PAIR_CARD_CLASS =
   'home-offer-card card flex h-full min-h-0 min-w-0 flex-col p-2 md:p-6'
 
-const HOME_OFFER_MOBILE_SCROLL_ROW_CLASS =
-  'flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
-
-const HOME_OFFER_MOBILE_CARD_CLASS = `${HOME_OFFER_PAIR_CARD_CLASS} shrink-0 snap-start w-[calc((100%-0.5rem)/2)] min-w-[calc((100%-0.5rem)/2)]`
-
 const HOME_FUTURE_TRIP_CARD_CLASS =
   'home-future-trip card flex flex-col overflow-hidden p-0 transition hover:shadow-md max-md:rounded-xl md:min-h-0 md:flex-row md:items-stretch md:gap-4 md:p-3'
 
@@ -90,6 +85,7 @@ function HomeFutureTripCard({ trip }: { trip: HomeFutureTrip }) {
     <Link
       to="/trips/$slug"
       params={{ slug: trip.slug }}
+      data-reveal=""
       className={HOME_FUTURE_TRIP_CARD_CLASS}
     >
       <div className="home-future-trip-media relative aspect-[5/4] w-full shrink-0 overflow-hidden md:aspect-auto md:h-24 md:w-24">
@@ -181,9 +177,9 @@ function HomeOfferCardBody({
             <h3
               className={`md:mt-2 md:text-xl ${
                 narrow
-                  ? 'mt-0.5 line-clamp-2 text-[0.6875rem] font-semibold leading-tight md:line-clamp-none md:text-xl md:font-normal'
+                  ? 'mt-0.5 text-[0.6875rem] font-semibold leading-tight md:text-xl md:font-normal'
                   : compactMobile
-                    ? 'mt-0.5 line-clamp-2 text-sm font-semibold leading-snug md:line-clamp-none md:text-xl md:font-normal'
+                    ? 'mt-0.5 text-sm font-semibold leading-snug md:text-xl md:font-normal'
                     : 'mt-1 text-lg'
               }`}
             >
@@ -194,9 +190,9 @@ function HomeOfferCardBody({
         <p
           className={`text-muted md:mt-2 ${
             narrow
-              ? 'line-clamp-2 text-[0.625rem] leading-tight md:line-clamp-none md:text-sm md:leading-relaxed'
+              ? 'text-[0.625rem] leading-tight md:text-sm md:leading-relaxed'
               : compactMobile
-                ? 'line-clamp-2 text-xs leading-snug md:line-clamp-none md:text-sm md:leading-relaxed'
+                ? 'text-xs leading-snug md:text-sm md:leading-relaxed'
                 : 'text-sm leading-relaxed'
           }`}
         >
@@ -241,17 +237,21 @@ function HomeOfferShell({
   children: React.ReactNode
 }) {
   if (isAdmin) {
-    return <div className={className}>{children}</div>
+    return (
+      <div data-reveal="" className={className}>
+        {children}
+      </div>
+    )
   }
   if (link?.to === '/contact') {
     return (
-      <Link to="/contact" className={className}>
+      <Link to="/contact" data-reveal="" className={className}>
         {children}
       </Link>
     )
   }
   return (
-    <Link to="/trips" search={link?.search ?? tripsSearch()} className={className}>
+    <Link to="/trips" search={link?.search ?? tripsSearch()} data-reveal="" className={className}>
       {children}
     </Link>
   )
@@ -472,9 +472,9 @@ function HomePage() {
           title={<InlineText value={home.aboutTitle} onChange={(v) => setHome({ aboutTitle: v })} />}
           desc={<InlineText value={draft.aboutText || home.aboutFallback} onChange={(v) => setSetting('aboutText', v)} multiline />}
         />
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div data-reveal-stagger="" className="grid gap-4 sm:grid-cols-3">
           {home.features.map((item, i) => (
-            <div key={i} className="card p-5">
+            <div key={i} data-reveal="" className="card p-5">
               <h3 className="font-semibold">
                 <InlineText value={item.title} onChange={(v) => setFeature(i, { title: v })} />
               </h3>
@@ -504,18 +504,14 @@ function HomePage() {
             kicker={<InlineText value={home.servicesKicker} onChange={(v) => setHome({ servicesKicker: v })} />}
             title={<InlineText value={home.servicesTitle} onChange={(v) => setHome({ servicesTitle: v })} />}
             desc={<InlineText value={home.servicesDesc} onChange={(v) => setHome({ servicesDesc: v })} multiline />}
-            descClassName="line-clamp-2 md:line-clamp-none"
           />
-          <div className="max-md:space-y-2">
-            <div className={`${HOME_OFFER_MOBILE_SCROLL_ROW_CLASS} md:hidden`}>
-              {offerCardIndices.slice(0, 3).map((i) => renderServiceOffer(i, HOME_OFFER_MOBILE_CARD_CLASS))}
+          <div>
+            <div data-reveal-stagger="" className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:hidden">
+              {offerCardIndices.map((i) => renderServiceOffer(i, HOME_OFFER_PAIR_CARD_CLASS))}
+              {renderPrivateOffer(HOME_OFFER_PAIR_CARD_CLASS)}
+              {renderFamilyOffer(HOME_OFFER_PAIR_CARD_CLASS)}
             </div>
-            <div className={`${HOME_OFFER_MOBILE_SCROLL_ROW_CLASS} md:hidden`}>
-              {renderServiceOffer(3, HOME_OFFER_MOBILE_CARD_CLASS)}
-              {renderPrivateOffer(HOME_OFFER_MOBILE_CARD_CLASS)}
-              {renderFamilyOffer(HOME_OFFER_MOBILE_CARD_CLASS)}
-            </div>
-            <div className="hidden md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-4">
+            <div data-reveal-stagger="" className="hidden md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-4">
               {offerCardIndices.map((i) => renderServiceOffer(i, HOME_OFFER_PAIR_CARD_CLASS))}
               {renderPrivateOffer(HOME_OFFER_PAIR_CARD_CLASS)}
               {renderFamilyOffer(HOME_OFFER_PAIR_CARD_CLASS)}
@@ -533,7 +529,7 @@ function HomePage() {
             kicker={<InlineText value={home.futureKicker} onChange={(v) => setHome({ futureKicker: v })} />}
             title={<InlineText value={home.futureTitle} onChange={(v) => setHome({ futureTitle: v })} />}
           />
-          <div className="home-future-grid grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+          <div data-reveal-stagger="" className="home-future-grid grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
             {upcoming.map((trip) => (
               <HomeFutureTripCard key={`${trip.id}-${trip.nextDate}`} trip={trip} />
             ))}
@@ -575,10 +571,11 @@ function HomePage() {
             kicker={<InlineText value={home.teamKicker} onChange={(v) => setHome({ teamKicker: v })} />}
             title={<InlineText value={home.teamTitle} onChange={(v) => setHome({ teamTitle: v })} />}
           />
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+          <div data-reveal-stagger="" className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
             {members.map((member) => (
               <div
                 key={member.id}
+                data-reveal=""
                 className="home-team-card card w-full p-4 text-center md:p-6"
               >
                 {isAdmin || member.photoUrl ? (
@@ -608,7 +605,7 @@ function HomePage() {
         </section>
       )}
 
-      <section className="bg-primary px-4 py-12 text-primary-foreground">
+      <section data-reveal="" className="bg-primary px-4 py-12 text-primary-foreground">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <div>
             <h2 className="font-display text-2xl font-semibold">
@@ -638,14 +635,15 @@ function HomePage() {
                   </div>
                 ))}
               </TestimonialsCarousel>
-              <div className="hidden gap-6 md:grid md:grid-cols-3">
+              <div data-reveal-stagger="" className="hidden gap-6 md:grid md:grid-cols-3">
                 {reviews.map((item) => (
-                  <HomeTestimonialCard
-                    key={item.id}
-                    item={item}
-                    isAdmin={isAdmin}
-                    onUpdate={updateReview}
-                  />
+                  <div key={item.id} data-reveal="">
+                    <HomeTestimonialCard
+                      item={item}
+                      isAdmin={isAdmin}
+                      onUpdate={updateReview}
+                    />
+                  </div>
                 ))}
               </div>
             </>
@@ -689,7 +687,7 @@ function HomePage() {
               title={<InlineText value={home.contactTitle} onChange={(v) => setHome({ contactTitle: v })} />}
               desc={<InlineText value={home.contactDesc} onChange={(v) => setHome({ contactDesc: v })} multiline />}
             />
-            <div className="mt-6 space-y-3 text-sm">
+            <div data-reveal="" className="mt-6 space-y-3 text-sm">
               <p className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-primary" />
                 <InlineText value={draft.phone} onChange={(v) => setSetting('phone', v)} />
@@ -703,7 +701,7 @@ function HomePage() {
                 <InlineText value={draft.address} onChange={(v) => setSetting('address', v)} />
               </p>
             </div>
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div data-reveal="" className="mt-6 flex flex-wrap gap-2">
               {settings?.whatsappNumber && (
                 <a href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="btn-primary text-sm">
                   <MessageCircle className="mr-1 h-4 w-4" /> WhatsApp
@@ -715,7 +713,7 @@ function HomePage() {
                 </a>
               )}
             </div>
-            <div className="mt-6 rounded-2xl border border-border bg-card p-4 text-sm">
+            <div data-reveal="" className="mt-6 rounded-2xl border border-border bg-card p-4 text-sm">
               <p className="font-semibold">Payment methods</p>
               <p className="mt-2 text-muted">
                 Telebirr{settings?.telebirrNumber ? ` \u2014 ${settings.telebirrNumber}` : ''}
@@ -726,7 +724,7 @@ function HomePage() {
               <p className="text-muted">Pay on arrival</p>
             </div>
           </div>
-          <div className="card p-6">
+          <div data-reveal="" className="card p-6">
             <h3 className="font-semibold">
               <InlineText value={home.contactFormTitle} onChange={(v) => setHome({ contactFormTitle: v })} />
             </h3>

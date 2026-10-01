@@ -32,6 +32,7 @@ export function TestimonialSubmitForm() {
 
   return (
     <form
+      data-reveal=""
       className="mt-6 space-y-4"
       onSubmit={async (e) => {
         e.preventDefault()

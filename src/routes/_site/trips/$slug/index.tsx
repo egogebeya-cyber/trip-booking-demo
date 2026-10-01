@@ -139,11 +139,11 @@ function TripDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
+    <div className="mx-auto w-full min-w-0 max-w-7xl px-4 py-6 md:py-8">
       <BackButton fallbackTo="/trips" label={t('trips')} className="mb-6" />
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <div className="card overflow-hidden">
+      <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="min-w-0 max-w-full lg:col-span-2">
+          <div data-reveal="" className="card min-w-0 max-w-full overflow-hidden">
             <div className="relative aspect-[16/9]">
               <InlineImage
                 src={images[galleryIndex] || coverImageUrl}
@@ -168,7 +168,7 @@ function TripDetailPage() {
               )}
             </div>
             {(images.length > 1 || edit?.isAdmin) && (
-              <div className="flex gap-2 overflow-x-auto p-3">
+              <div className="flex w-full min-w-0 max-w-full gap-2 overflow-x-auto p-3">
                 {images.map((url, i) => (
                   <button
                     key={url + i}
@@ -207,8 +207,8 @@ function TripDetailPage() {
             )}
           </div>
 
-          <div className="mt-6">
-            <h1 className="font-display text-3xl font-bold">
+          <div className="mt-6 min-w-0 max-w-full">
+            <h1 className="max-w-full break-words font-display text-3xl font-bold">
               <InlineText value={title} onChange={(v) => { setTitle(v); mark() }} />
             </h1>
             {edit?.isAdmin && (
@@ -216,12 +216,15 @@ function TripDetailPage() {
                 <TripAdminControls tripId={trip.id} afterDeleteTo="/trips" />
               </div>
             )}
-            <p className="mt-2 flex items-center gap-1 text-muted">
-              <MapPin className="h-4 w-4" />
-              <InlineText value={destination} onChange={(v) => { setDestination(v); mark() }} />
-              <span className="mx-2">·</span>
-              <Clock className="h-4 w-4" />
-              <InlineText value={durationDays} onChange={(v) => { setDurationDays(v); mark() }} /> {t('days')}
+            <p className="mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-muted">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 break-words">
+                <InlineText value={destination} onChange={(v) => { setDestination(v); mark() }} />
+              </span>
+              <span className="inline-flex shrink-0 items-center gap-1">
+                <Clock className="h-4 w-4 shrink-0" />
+                <InlineText value={durationDays} onChange={(v) => { setDurationDays(v); mark() }} /> {t('days')}
+              </span>
             </p>
             {trip.avgRating > 0 && (
               <p className="mt-2 flex items-center gap-1 text-sm">
@@ -229,13 +232,13 @@ function TripDetailPage() {
                 {trip.avgRating.toFixed(1)} · {trip.reviews.length} {t('reviews')}
               </p>
             )}
-            <p className="mt-4 leading-relaxed text-muted">
+            <p className="mt-4 max-w-full break-words leading-relaxed text-muted">
               <InlineText value={description} onChange={(v) => { setDescription(v); mark() }} multiline />
             </p>
           </div>
 
           {trip.videoUrl && (
-            <section className="mt-8 overflow-hidden rounded-2xl border border-border">
+            <section data-reveal="" className="mt-8 overflow-hidden rounded-2xl border border-border">
               <iframe
                 src={getYouTubeEmbedUrl(trip.videoUrl)}
                 title={`${title} video`}
@@ -249,9 +252,9 @@ function TripDetailPage() {
           {itinerary.length > 0 && (
             <section className="mt-10">
               <h2 className="font-display text-2xl font-semibold">{t('itinerary')}</h2>
-              <ol className="mt-4 space-y-4">
+              <ol data-reveal-stagger="" className="mt-4 space-y-4">
                 {itinerary.map((day, i) => (
-                  <li key={day.id} className="card p-4">
+                  <li key={day.id} data-reveal="" className="card min-w-0 max-w-full break-words p-4">
                     <h3 className="font-semibold">
                       {t('day')} {day.dayNumber}:{' '}
                       <InlineText
@@ -262,7 +265,7 @@ function TripDetailPage() {
                         }}
                       />
                     </h3>
-                    <p className="mt-1 text-sm text-muted">
+                    <p className="mt-1 break-words text-sm text-muted">
                       <InlineText
                         value={day.description}
                         onChange={(v) => {
@@ -278,7 +281,7 @@ function TripDetailPage() {
             </section>
           )}
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <div data-reveal="" className="mt-10 grid gap-6 md:grid-cols-2">
             {includedItems.length > 0 && (
               <section>
                 <h2 className="font-display text-xl font-semibold">{t('included')}</h2>
@@ -320,7 +323,7 @@ function TripDetailPage() {
           </div>
 
           {trip.mapEmbedUrl && (
-            <section className="mt-10">
+            <section data-reveal="" className="mt-10">
               <h2 className="font-display text-2xl font-semibold">{t('destination')}</h2>
               <div className="mt-4 aspect-video overflow-hidden rounded-2xl border border-border">
                 <iframe
@@ -335,7 +338,7 @@ function TripDetailPage() {
           )}
 
           {faqs.length > 0 && (
-            <section className="mt-10">
+            <section data-reveal="" className="mt-10">
               <h2 className="font-display text-2xl font-semibold">{t('faq')}</h2>
               <div className="mt-4 divide-y divide-border rounded-2xl border border-border">
                 {faqs.map((faq, i) => (
@@ -377,9 +380,9 @@ function TripDetailPage() {
             {trip.reviews.length === 0 ? (
               <p className="mt-4 text-muted">{t('noReviews')}</p>
             ) : (
-              <div className="mt-4 space-y-4">
+              <div data-reveal-stagger="" className="mt-4 space-y-4">
                 {trip.reviews.map((review) => (
-                  <blockquote key={review.id} className="card p-4">
+                  <blockquote key={review.id} data-reveal="" className="card p-4">
                     <div className="flex items-center gap-1">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
@@ -401,8 +404,8 @@ function TripDetailPage() {
           </section>
         </div>
 
-        <aside className="space-y-6">
-          <div className="card p-6 lg:sticky lg:top-4">
+        <aside data-reveal-stagger="" className="min-w-0 max-w-full space-y-6">
+          <div data-reveal="" className="card p-6 lg:sticky lg:top-4">
             <p className="text-sm text-muted">{t('from')}</p>
             {edit?.isAdmin ? (
               <p className="text-3xl font-bold text-price">
@@ -453,7 +456,7 @@ function TripDetailPage() {
             <WaitlistForm tripId={trip.id} dates={trip.availability} />
           </div>
 
-          <div className="card p-4">
+          <div data-reveal="" className="card p-4">
             <h3 className="flex items-center gap-2 font-semibold">
               <Share2 className="h-4 w-4" />
               {t('shareTrip')}
@@ -487,7 +490,7 @@ function TripDetailPage() {
       {relatedTrips.length > 0 && (
         <section className="mt-16">
           <h2 className="font-display text-2xl font-semibold">{t('relatedTrips')}</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-reveal-stagger="" className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {relatedTrips.map((related) => (
               <TripCard
                 key={related.id}

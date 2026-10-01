@@ -39,7 +39,7 @@ export function TripCard({ trip, locale = 'en', onCompare, isWishlisted, loggedI
   const [cover, setCover] = useState(trip.coverImageUrl)
 
   return (
-    <article className="card group overflow-hidden transition hover:shadow-md">
+    <article data-reveal="" className="card group overflow-hidden transition hover:shadow-md">
       <div className="relative aspect-[4/3] overflow-hidden">
         <InlineImage
           src={cover || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600'}
@@ -57,16 +57,19 @@ export function TripCard({ trip, locale = 'en', onCompare, isWishlisted, loggedI
             })
           }}
         />
-        <div className="absolute left-3 top-3 flex flex-wrap gap-1">
+        <div className="absolute left-3 right-14 top-3 flex flex-wrap gap-1">
           {trip.durationDays === 1 && (
-            <span className="rounded-full bg-primary px-2 py-0.5 text-xs uppercase tracking-wide text-white">1 Day Trip</span>
+            <span className="whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-xs uppercase tracking-wide text-white">1 Day Trip</span>
+          )}
+          {trip.durationDays === 2 && (
+            <span className="whitespace-nowrap rounded-full bg-sky-600 px-2 py-0.5 text-xs uppercase tracking-wide text-white">2 Days Trip</span>
           )}
           {trip.durationDays > 2 && (trip.category as { slug?: string } | undefined)?.slug === 'international' && (
-            <span className="rounded-full bg-sky-700 px-2 py-0.5 text-xs uppercase tracking-wide text-white">International</span>
+            <span className="whitespace-nowrap rounded-full bg-sky-700 px-2 py-0.5 text-xs uppercase tracking-wide text-white">International</span>
           )}
-          {trip.isFeatured && <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-white">Featured</span>}
-          {trip.isLastMinuteDeal && <span className="rounded-full bg-destructive px-2 py-0.5 text-xs text-white">Deal</span>}
-          {trip.isPopular && <span className="rounded-full bg-amber-500 px-2 py-0.5 text-xs text-white">Popular</span>}
+          {trip.isFeatured && <span className="whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-xs text-white">Featured</span>}
+          {trip.isLastMinuteDeal && <span className="whitespace-nowrap rounded-full bg-destructive px-2 py-0.5 text-xs text-white">Deal</span>}
+          {trip.isPopular && <span className="whitespace-nowrap rounded-full bg-amber-500 px-2 py-0.5 text-xs text-white">Popular</span>}
         </div>
         <div className="absolute right-3 top-3">
           <WishlistButton tripId={trip.id} loggedIn={loggedIn} initial={isWishlisted} className="bg-white/90 !px-2 !py-1" />

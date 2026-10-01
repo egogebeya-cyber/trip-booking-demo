@@ -97,7 +97,7 @@ function CompareTripsPage() {
         <BackButton fallbackTo="/trips" label={t('trips')} />
       </div>
 
-      <div className="mt-8 overflow-x-auto">
+      <div data-reveal="" data-reveal-motion="fade" className="mt-8 overflow-x-auto">
         <table className="w-full min-w-[640px] border-collapse">
           <thead>
             <tr>

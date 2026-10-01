@@ -5,6 +5,7 @@ import { Footer } from '~/components/layout/Footer'
 import { Header } from '~/components/layout/Header'
 import { MobileBottomNav } from '~/components/layout/MobileBottomNav'
 import { AdminEditBar } from '~/components/layout/AdminEditBar'
+import { SiteMotion } from '~/components/layout/SiteMotion'
 import { TrustBadges } from '~/components/layout/TrustBadges'
 import { SupportChat } from '~/components/layout/SupportChat'
 import { SiteEditProvider } from '~/components/site-edit-context'
@@ -25,7 +26,12 @@ function SiteLayout() {
   const isTripDetail = /^\/trips\/[^/]+\/?$/.test(pathname)
   return (
     <SiteEditProvider user={user} settings={settings}>
-      <div className="flex min-h-dvh flex-col pb-[var(--mobile-nav-height)] md:pb-0">
+      <div
+        className={cn(
+          'flex min-h-dvh flex-col pb-[var(--mobile-nav-height)] md:pb-0',
+          isTripDetail && 'trip-has-book-bar',
+        )}
+      >
         <AdminEditBar />
         <Header user={user} settings={settings} />
         <main
@@ -34,8 +40,11 @@ function SiteLayout() {
             isTripDetail && 'site-main-trip-detail',
           )}
         >
-          <Outlet />
+          <div key={pathname} className="site-page min-w-0 max-w-full">
+            <Outlet />
+          </div>
         </main>
+        <SiteMotion />
         <TrustBadges />
         <Footer settings={settings} user={user} />
         <SupportChat

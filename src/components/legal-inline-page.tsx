@@ -7,7 +7,7 @@ import { saveLegalPageFn } from '~/server/admin/functions'
 function LegalBody({ body }: { body: string }) {
   const blocks = body.trim().split(/\n{2,}/)
   return (
-    <div className="mt-8 space-y-5 text-[0.95rem] leading-7 text-muted">
+    <div data-reveal="" className="mt-8 space-y-5 text-[0.95rem] leading-7 text-muted">
       {blocks.map((block, i) => {
         const lines = block.split('\n')
         const heading = lines[0] ?? ''
@@ -71,7 +71,7 @@ export function LegalInlinePage({
         />
       </h1>
       {edit?.isAdmin ? (
-        <div className="prose mt-8 max-w-none whitespace-pre-wrap text-muted">
+        <div data-reveal="" className="prose mt-8 max-w-none whitespace-pre-wrap text-muted">
           <InlineText
             value={body}
             multiline

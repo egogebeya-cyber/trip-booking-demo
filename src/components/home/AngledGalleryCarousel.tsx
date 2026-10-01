@@ -200,7 +200,7 @@ export function AngledGalleryCarousel({
   }
 
   return (
-    <div className="relative mt-2">
+    <div data-reveal="" className="relative mt-2">
       <div
         className="relative mx-auto h-[20rem] w-full max-w-6xl touch-pan-y sm:h-[28rem] md:h-[32rem]"
         style={{ perspective: '1600px', perspectiveOrigin: '50% 48%' }}

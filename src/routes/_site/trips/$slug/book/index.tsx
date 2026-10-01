@@ -146,13 +146,13 @@ function BookTripPage() {
       <BackButton fallbackTo={`/trips/${slug}`} label={trip.title} />
       <h1 className="mt-4 font-display text-3xl font-bold">{t('bookThisTrip')}</h1>
       {availableDates.length === 0 && (
-        <div className="mt-6">
+        <div data-reveal="" className="mt-6">
           <p className="text-sm text-muted">{t('joinWaitlist')}</p>
           <WaitlistForm tripId={trip.id} dates={trip.availability} />
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+      <form data-reveal="" onSubmit={handleSubmit} className="mt-8 space-y-6">
         <div className="card p-6">
           <p className="label">How do you want to travel?</p>
           <div className="mt-2 grid gap-3">
